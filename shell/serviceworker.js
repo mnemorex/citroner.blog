@@ -12,7 +12,7 @@ var appShell = [
     , '/graphics/authors/charlie-habolin.jpg'
     , '/post/offline'
     , '/post/offline/'
-    , '/index-articles.html'
+    , '/post/index-articles.html'
     , '/manifest.json'
 ];
 self.addEventListener('install', function (event) {

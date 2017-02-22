@@ -11,7 +11,7 @@ window.onload = function () {
     }
     setupEvents();
     setupServiceWorker();
-    fetch("/index-articles.html").then(validate).then(insertArticleIndex).catch(riseError);
+    fetch("/post/index-articles.html").then(validate).then(insertArticleIndex).catch(riseError);
 };
 window.onpopstate = function (event) {
     if (event.state) {
