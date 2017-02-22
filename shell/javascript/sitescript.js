@@ -53,6 +53,7 @@ function setupServiceWorker() {
 function linkRelay(event) {
     if (event.target.pathname.startsWith("/post/")) {
         document.getElementsByTagName("main")[0].classList.add("hide");
+        document.getElementById("navigation-toggle").checked = false;
         event.preventDefault();
         fetchArticle(event.target.href, false);
     }
