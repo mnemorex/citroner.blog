@@ -1,0 +1,168 @@
+<article data-author-id="monkcs" lang="sv">
+    <script src="/javascript/shellcheck.js"></script>
+    <header>
+        <h1 lang="sv">Bygg en pixelring-lampa som trådlöst styrs från Arduino</h1>
+        <h1 lang="en">Build a pixelring-lamp controlled wirelessly from an Arduino</h1> <img src="/graphics/authors/charlie-habolin.jpg"> <span>Charlie Habolin</span>
+        <br/>
+        <time datetime="2017-02-01T15:00">01 februari 2017. 15:00</ti+01:00me>
+    </header>
+    <p> Med endast en neopixelring + en arduino kan man bygga en radiokontrollerad rgb-lampa. </p> INSERT REQURIMENTS LIST
+    <p> I detta projekt använder jag en <a href="https://learn.adafruit.com/adafruit-neopixel-uberguide/neopixel-rings" target="_blank">Adafruit neopixelring</a> med 24 rgb-lysdioder som alla är indviduellt programerbara. Det finns förutom ringar även som matriser och remsor, men ringvarianten passar bra då min lamparmatur nästan precis matchar diametern på pixelringen! </p>
+    <h3>Strömförsörjning</h3>
+    <p> Viktigt att tänka på är tillräcklig strömförsörjning då även fast varje rgb-lysdiod maximalt drar 60mA, kommer man snabbt upp i ampere. Ofta kommer inte varje led att dra 60mA, men om vi vill kunna sätta vitt ljus (samma ljusstyrka på alla rgb-kanalerna) på högsta ljusstyrkan måste vi ha enligt formeln nedan
+        <br> <code><var>24 × 60 mA = 1440mA</var></code>
+        <br> en strömförsörjning på 1,44 ampere. Det löser vi med till exempel en telefonladdare som ofta finns i varianter som levererar 2,4 ampere. Då kan både Arduinon och pixelringen drivas av den med god marginal. </p>
+    <h2>Inkoppling till Arduino</h2>
+    <p></p>
+    <h2>Sketchen för Arduinon</h2>
+    <h3>Styrning av pixelringen</h3>
+    <p> Adafruit tillhandahåller ett <a href="https://learn.adafruit.com/adafruit-neopixel-uberguide/arduino-library-installation" target="_blank">bibliotek</a> för att enkelt styra alla deras NeoPixel-tillbehör. Detta installeras enklast (om du använder <a href="https://www.arduino.cc/en/Main/Software" target="_blank">Arduino IDE</a>) via bibliotekshanteraren under <em>Skiss > Inkludera bibliotek > Hantera bibliotek</em> där det bara är att söka efter "Adafruit Neopixel" och välja <em>Installera</em>. </p>
+    <p> För styrning använder vi en blank arduinosketch och importerar neopixel-biblioteket <code data-language="cpp">#include &lt;Adafruit_NeoPixel.h&gt;</code>. Sedan definerar vi två konstanter, antalet lysdioder på vår ring som i det här fallet är 24 och pin för att kommunicera med till nummer sex. Du kan ändra detta till valfri digital I/O pin om sex är upptagen.</p>
+    <figure> <pre><code data-language="cpp">#include &lt;Adafruit_NeoPixel.h&gt;
+
+/* NeoPixel setup */
+const int neopixelNumber = 24;
+const int neopixelPin = 6;
+Adafruit_NeoPixel Neopixel = Adafruit_NeoPixel(neopixelNumber, neopixelPin, NEO_GRB + NEO_KHZ800);
+
+
+void setup() {
+  /* Special code for AT Tiny85 5V 16MHz */
+#if defined (__AVR_ATtiny85__)
+  if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
+#endif
+
+  Neopixel.begin();
+  Neopixel.show();
+}
+
+void loop() {
+    for (int counter = 0; counter &lt; Neopixel.numPixels(); counter++) {
+      Neopixel.setPixelColor(counter, Neopixel.Color(162, 230, 101));
+      Neopixel.show();
+      delay(20);
+    }
+    for (int counter = 0; counter &lt; Neopixel.numPixels(); counter++) {
+      Neopixel.setPixelColor(counter, Neopixel.Color(230, 101, 162));
+      Neopixel.show();
+      delay(20);
+    }
+}</code></pre>
+        <figcaption>SimpleNeopixelTest.ino</figcaption>
+    </figure>
+    <p>
+        <mark>Special <strong>#if</strong> fallet kan tas bort, men ger stöd för att använda neopixel med ATtiny85</mark>
+    </p>
+    <p> I <code data-language="cpp">setup()</code> initieras sedan neopixel genom <code data-language="cpp">Neopixel.begin();</code> och med <code data-language="cpp">Neopixel.show();</code> skrivs bufferten till pixelringen. Om bufferten är tom resulterar det i helt släckta lysdioder. <code data-language="cpp">loop()</code> är ganska självförklarande, men att notera är att varje led i pixelringen adresseras individuellt genom <code data-language="cpp">Neopixel.setPixelColor(2)</code> därav for-loopen. Detta blir resultatet när vi laddar upp sketchen till arduinon: </p>
+    <figure>
+        <video loop muted autoplay>
+            <!-- <source src="http://clips.vorwaerts-gmbh.de/VfE_html5.webm" type="video/webm"> -->
+            <source src="https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_720p_stereo.ogg"> </video>
+        <figcaption>Växelvis loopande färg</figcaption>
+    </figure>
+    <p> Adafruit har skrivit några behjälpliga exempelfunktioner som jag tänker använda i detta projekt. Dessa finns i att hitta under <em>Fil > Exempel > Adafruit NeoPixel > strandtest</em>. I denna sketch finns lite olika typer av ljuseffekter till exempel regnbågsskiftande cykler. Tanken är att ha tre olika ljuseffekter som man cyklar genom med "1"- trycket på flic'en. Alla dessa finns i <em>colorfunctions.ino</em>. Dessa är de olika ljuseffekterna jag tänkte använda:<br>
+    <ul>
+        <li><code data-language="cpp">solidColor(uint32_t <var>color</var>);</code></li>
+        <li><code data-language="cpp">rainbow(uint8_t <var>waitInMilliseconds</var>);</code></li>
+        <li><code data-language="cpp">theaterChase(uint32_t <var>color</var>, uint8_t <var>waitInMilliseconds</var>);</code></li>
+        <li><code data-language="cpp">solidColor(uint32_t <var>color</var>);</code></li>
+    </ul></p>
+    <figure> <pre><code data-language="cpp">// Fill the dots one after the other with a color
+void colorWipe(uint32_t color, uint8_t waitInMilliseconds) {
+  for (uint16_t pixelCounter = 0; pixelCounter &lt; Neopixel.numPixels(); pixelCounter++) {
+    Neopixel.setPixelColor(pixelCounter, color);
+    Neopixel.show();
+    delay(waitInMilliseconds);
+  }
+}</code></pre>
+        <figcaption>colorfunctions.ino</figcaption>
+    </figure>
+    <figure> <pre><code data-language="cpp">// Color shifting effect
+void rainbow(uint8_t waitInMilliseconds) {
+  uint16_t colorCounter, pixelCounter;
+
+  for (colorCounter = 0; colorCounter &lt; 256; colorCounter++) {
+    for (pixelCounter = 0; pixelCounter &lt; Neopixel.numPixels(); pixelCounter++) {
+      Neopixel.setPixelColor(pixelCounter, wheel((pixelCounter + colorCounter) & 255));
+    }
+    Neopixel.show();
+    delay(waitInMilliseconds);
+  }
+}
+
+// Slightly different, this makes the rainbow equally distributed throughout
+void rainbowCycle(uint8_t waitInMilliseconds) {
+  uint16_t colorCounter, pixelCounter;
+  // Make five cycles of all colors on wheel
+  for (colorCounter = 0; colorCounter &lt; 256 * 5; colorCounter++) {
+    for (pixelCounter = 0; pixelCounter &lt; Neopixel.numPixels(); pixelCounter++) {
+      Neopixel.setPixelColor(pixelCounter, wheel(((pixelCounter * 256 / Neopixel.numPixels()) + colorCounter) & 255));
+    }
+    Neopixel.show();
+    delay(waitInMilliseconds);
+  }
+}</code></pre>
+        <figcaption>colorfunctions.ino</figcaption>
+    </figure>
+    <figure> <pre><code data-language="cpp">// Theatre-style crawling lights.
+void theaterChase(uint32_t color, uint8_t waitInMilliseconds) {
+  // Do ten cycles of chasing
+  for (int cycleCounter = 0; cycleCounter &lt; 10; cycleCounter++) {
+    for (int counter = 0; counter &lt; 3; counter++) {
+      for (uint16_t pixelCounter = 0; pixelCounter &lt; Neopixel.numPixels(); pixelCounter = pixelCounter + 3) {
+        // Turn every third pixel on
+        Neopixel.setPixelColor(pixelCounter + counter, color);
+      }
+      Neopixel.show();
+      delay(waitInMilliseconds);
+
+      for (uint16_t pixelCounter = 0; pixelCounter &lt; Neopixel.numPixels(); pixelCounter = pixelCounter + 3) {
+        // Turn every third pixel off
+        Neopixel.setPixelColor(pixelCounter + counter, 0);
+      }
+    }
+  }
+}
+
+// Theatre-style crawling lights with rainbow effect
+void theaterChaseRainbow(uint8_t waitInMilliseconds) {
+  // Cycle all 256 colors in the wheel
+  for (int colorCounter = 0; colorCounter &lt; 256; colorCounter++) {
+    for (int counter = 0; counter &lt; 3; counter++) {
+      for (uint16_t counter3 = 0; counter3 &lt; Neopixel.numPixels(); counter3 = counter3 + 3) {
+        // Turn every third pixel on
+        Neopixel.setPixelColor(counter3 + counter, wheel( (counter3 + colorCounter) % 255));
+      }
+      Neopixel.show();
+      delay(waitInMilliseconds);
+
+      for (uint16_t pixelCounter = 0; pixelCounter &lt; Neopixel.numPixels(); pixelCounter = pixelCounter + 3) {
+        // Turn every third pixel off
+        Neopixel.setPixelColor(pixelCounter + counter, 0);
+      }
+    }
+  }
+}</code></pre>
+        <figcaption>colorfunctions.ino</figcaption>
+    </figure>
+    <figure> <pre><code data-language="cpp">// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+uint32_t wheel(byte wheelPosition) {
+  wheelPosition = 255 - wheelPosition;
+  if (wheelPosition &lt; 85) {
+    return Neopixel.Color(255 - wheelPosition * 3, 0, wheelPosition * 3);
+  }
+  if (wheelPosition &lt; 170) {
+    wheelPosition -= 85;
+    return Neopixel.Color(0, wheelPosition * 3, 255 - wheelPosition * 3);
+  }
+  wheelPosition -= 170;
+  return Neopixel.Color(wheelPosition * 3, 255 - wheelPosition * 3, 0);
+}</code></pre>
+        <figcaption>colorfunctions.ino</figcaption>
+    </figure>
+    <p> <a href="https://playground.arduino.cc/Main/ArduinoOnOtherAtmelChips" target="_blank">Arduino on other Chips</a> </p>
+    <footer> <address>
+            Kontakta mig på <a href="mailto:charlie.habolin@monkcs.se?subject=Bloggen">charlie.habolin@monkcs.se</a> om du har någon fråga!
+        </address> </footer>
+</article>
