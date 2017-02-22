@@ -19,7 +19,12 @@ window.onpopstate = function (event) {
     }
 };
 
-function setupEvents() {}
+function setupEvents() {
+    /* window.addEventListener('devicelight', function(event) {
+   alert('The current value of light is ' + event.value + ' lux');
+   });
+    */
+}
 
 function registerClickEvent() {
     'use strict';
@@ -99,6 +104,7 @@ function riseError(error) {
     console.log('There has been a problem with a fetch operation: ' + error);
     document.getElementsByTagName("main")[0].classList.remove("hide");
 }
+
 function offlineMessage() {
     console.log('There has been a problem with a fetch operation');
     document.getElementsByTagName("main")[0].classList.remove("hide");
