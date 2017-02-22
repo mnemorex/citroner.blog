@@ -1,0 +1,11 @@
+{
+  "name": "Citroner bloggen",
+  "short_name": "Citroner",
+  "description": "When life gives you citroner, make citronbatterier",
+  "lang": "sv",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#ffe97c",
+  "background_color": "#ffe97c"
+}

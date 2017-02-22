@@ -1,0 +1,30 @@
+@charset "UTF-8";
+@page {
+    size: auto;
+    margin: 0mm;
+}
+
+
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule */
+
+@media only print {
+    * {
+        
+    }
+    body {
+        /* Restore margins from @page to remove browser url add-in */
+        margin: 10mm 15mm 10mm 15mm;
+        font-size: 16px;
+    }
+    a:link:after,
+    a:visited:after {
+        font-style: italic;
+        content: " - " attr(href);
+    }
+    aside {
+        display: none;
+    }
+    #print-message {
+        display: none;
+    }
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Citroner bloggen</title>
+    <meta name="shelldocument" content="true" />
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" integrity="sha384-i/ZLCOBtDmoxztrtShNvc3vGe1+IbOGDzkZNC4KLXurv/BT7QInnM2AsPnvbgXH/" crossorigin="anonymous">-->
+    <link rel="stylesheet" type="text/css" href="css/normalize.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" media="print" href="css/media-print.css" />
+    <!-- Web manifest values -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Citroner">
+    <meta name="apple-mobile-web-app-title" content="Citroner">
+    <meta name="theme-color" content="#ffe97c">
+    <meta name="msapplication-navbutton-color" content="#ffe97c">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="msapplication-starturl" content="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Publisher Information -->
+    <meta name="author" content="Charlie Habolin" />
+    <meta name="publisher" content="Charlie Habolin" />
+    <meta name="description" content="A blog about electronics, code, life and citroner!" />
+    <!-- Javascript -->
+    <script>
+        var userLanguage = navigator.language;
+        // alert(userLanguage);
+        if (userLanguage.includes("en") | userLanguage.includes("sv")) {
+            document.getElementsByTagName('html')[0].setAttribute('lang', userLanguage);
+        }
+        else {
+            document.getElementsByTagName('html')[0].setAttribute('lang', 'en');
+        }
+    </script>
+    <script defer src="javascript/tools.js"></script>
+    <script defer src="javascript/sitescript.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Citroner</h1></header>
+    <div class="flex-container">
+        <input type="checkbox" id="navigation-toggle">
+        <aside>
+            <label class="navigation-toggle" for="navigation-toggle">&rarr;</label>
+            <nav>
+                <ul>
+                    <!--<li><span lang="en">Home</span>
+                    <span lang="sv">Hem</span></li>-->
+                    <li><span lang="en">Articles</span> <span lang="sv">Artiklar</span>
+                        <ul id="article-index"> </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        <main>
+            <label class="navigation-toggle" for="navigation-toggle">&larr;</label>
+            <mark lang="en" data-lang-localized="true"><b>This article is written in Swedish and it seems that it is not your native language. You are welcome to use translation services like Google Translate 😊</b></mark>
+        </main>
+    </div>
+    <footer>
+        <section id="print-message"> This is the printed version of this site </section>
+    </footer>
+</body>
+
+</html>
