@@ -121,5 +121,4 @@ function insertArticleIndex(rawHtmlText) {
     articleIndex.innerHTML = "";
     articleIndex.insertAdjacentHTML('beforeend', rawHtmlText);
     registerClickEvent();
-    document.innerHTML
 }
