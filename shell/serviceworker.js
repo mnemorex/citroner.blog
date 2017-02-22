@@ -1,4 +1,4 @@
-var cacheIdentifier = 'citroner-version-2';
+var cacheIdentifier = 'citroner-version-5';
 var appShell = [
     '/'
     , '/index.html'
@@ -8,10 +8,11 @@ var appShell = [
     , '/javascript/sitescript.js'
     , '/javascript/tools.js'
     , '/javascript/shellcheck.js'
+    , '/javascript/shellredirect.js'
     , '/graphics/authors/charlie-habolin.jpg'
     , '/post/offline'
     , '/post/offline/'
-    , 'index-articles.html'
+    , '/index-articles.html'
     , '/manifest.json'
 ];
 self.addEventListener('install', function (event) {
@@ -46,7 +47,8 @@ self.addEventListener('fetch', function (event) {
 });
 
 function logError(errorCallback) {
-    console.info("Fetch: failed fetching data, ok if offline");
+    console.warn("Fetch: failed fetching data, ok if offline");
+    console.warn(errorCallback);
 }
 /*
 self.addEventListener('fetch', function (event) {

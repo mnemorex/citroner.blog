@@ -39,18 +39,18 @@ function setupServiceWorker() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/serviceworker.js').then(function (registration) {
             if (registration.installing) {
-                console.log('Service worker installing');
+                console.info('Service worker installing');
             }
             else if (registration.waiting) {
-                console.log('Service worker installed');
+                console.info('Service worker installed, waiting for handover by old service worker');
             }
             else if (registration.active) {
-                console.log('Service worker active');
+                console.info('Service worker active');
             }
             console.log('ServiceWorker scope: ', registration.scope);
         }).catch(function (error) {
             // Registration failed
-            console.log('ServiceWorker registration failed: ', error);
+            console.error('ServiceWorker registration failed: ', error);
         });
     }
 }
