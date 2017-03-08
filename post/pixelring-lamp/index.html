@@ -1,0 +1,122 @@
+<article data-author-id="monkcs" lang="sv">
+    <script src="/javascript/shellcheck.js"></script>
+    <header>
+        <h1 lang="sv">Neopixellampa som trådlöst styrs från en Flic-knapp</h1>
+        <h1 lang="en">Neopixel lamp wirelessly controlled from a Flic button</h1> <img src="/graphics/authors/charlie-habolin.jpg"> <span>Charlie Habolin</span>
+        <br/>
+        <time datetime="2017-02-01T15:00">01 februari 2017. 15:00</ti+01:00me>
+    </header>
+    <p> Med endast en neopixelring + en arduino kan man bygga en radiokontrollerad rgb-lampa. </p> INSERT REQURIMENTS LIST
+    <p> I detta projekt använder jag en <a href="https://learn.adafruit.com/adafruit-neopixel-uberguide/neopixel-rings" target="_blank">Adafruit neopixelring</a> med 24 rgb-lysdioder som alla är indviduellt programerbara. Det finns förutom ringar även som matriser och remsor, men ringvarianten passar bra då min lamparmatur nästan precis matchar diametern på pixelringen! </p>
+    <h3>Strömförsörjning</h3>
+    <p> Viktigt att tänka på är tillräcklig strömförsörjning då även fast varje rgb-lysdiod maximalt drar 60mA, kommer man snabbt upp i ampere. Ofta kommer inte varje led att dra 60mA, men om vi vill kunna sätta vitt ljus (samma ljusstyrka på alla rgb-kanalerna) på högsta ljusstyrkan måste vi ha enligt formeln nedan
+        <br> <code><var>24 × 60 mA = 1440mA</var></code>
+        <br> en strömförsörjning på 1,44 ampere. Det löser vi med till exempel en telefonladdare som ofta finns i varianter som levererar 2,4 ampere. Då kan både Arduinon och pixelringen drivas av den med god marginal. </p>
+    <h2>Inkoppling till Arduino</h2>
+    <p></p>
+    <h2>Sketchen för Arduinon</h2>
+    <h3>Exempel på styrning av Neopixel</h3>
+    <p> Adafruit tillhandahåller ett <a href="https://learn.adafruit.com/adafruit-neopixel-uberguide/arduino-library-installation" target="_blank">bibliotek</a> för att enkelt styra alla deras NeoPixel-tillbehör. Detta installeras enklast (om du använder <a href="https://www.arduino.cc/en/Main/Software" target="_blank">Arduino IDE</a>) via bibliotekshanteraren under <em>Skiss > Inkludera bibliotek > Hantera bibliotek</em> där det bara är att söka efter "Adafruit Neopixel" och välja <em>Installera</em>. </p>
+    <p> För styrning använder vi en blank arduinosketch och importerar neopixel-biblioteket <code class="language-cpp">#include &lt;Adafruit_NeoPixel.h&gt;</code>. Sedan definerar vi två konstanter, antalet lysdioder på vår ring som i det här fallet är 24 och pin för att kommunicera med till nummer sex. Du kan ändra detta till valfri digital I/O pin om sex är upptagen.</p>
+    <figure> <pre><code class="language-cpp">#include &lt;Adafruit_NeoPixel.h&gt;
+
+/* NeoPixel setup */
+const int neopixelNumber = 24;
+const int neopixelPin = 6;
+Adafruit_NeoPixel Neopixel = Adafruit_NeoPixel(neopixelNumber, neopixelPin, NEO_GRB + NEO_KHZ800);
+
+
+void setup() {
+  /* Special code for AT Tiny85 5V 16MHz */
+#if defined (__AVR_ATtiny85__)
+  if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
+#endif
+
+  Neopixel.begin();
+  Neopixel.show();
+}
+
+void loop() {
+    for (int counter = 0; counter &lt; Neopixel.numPixels(); counter++) {
+      Neopixel.setPixelColor(counter, Neopixel.Color(162, 230, 101));
+      Neopixel.show();
+      delay(20);
+    }
+    for (int counter = 0; counter &lt; Neopixel.numPixels(); counter++) {
+      Neopixel.setPixelColor(counter, Neopixel.Color(230, 101, 162));
+      Neopixel.show();
+      delay(20);
+    }
+}</code></pre>
+        <figcaption>SimpleNeopixelTest.ino</figcaption>
+    </figure>
+    <p>
+        <mark>Special <strong>#if</strong> fallet kan tas bort, men ger stöd för att använda neopixel med ATtiny85</mark>
+    </p>
+    <p> I <code class="language-cpp">setup()</code> initieras sedan neopixel genom <code class="language-cpp">Neopixel.begin();</code> och med <code class="language-cpp">Neopixel.show();</code> skrivs bufferten till pixelringen. Om bufferten är tom resulterar det i helt släckta lysdioder. <code class="language-cpp">loop()</code> är ganska självförklarande, men att notera är att varje led i pixelringen adresseras individuellt genom <code class="language-cpp">Neopixel.setPixelColor(2)</code> därav for-loopen. Detta blir resultatet när vi laddar upp sketchen till arduinon: </p>
+    <figure>
+        <video loop muted autoplay poster="/graphics/authors/charlie-habolin.jpg">
+            <!-- <source src="http://clips.vorwaerts-gmbh.de/VfE_html5.webm" type="video/webm"> -->
+            <source src="https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_720p_stereo.ogg"> </video>
+        <figcaption>Växelvis loopande färg</figcaption>
+    </figure>
+    <p> Adafruit har skrivit några behjälpliga exempelfunktioner som jag tänker använda i detta projekt. Dessa finns i att hitta under <em>Fil > Exempel > Adafruit NeoPixel > strandtest</em>. I denna sketch finns lite olika typer av ljuseffekter till exempel regnbågsskiftande cykler, dom är något modifierade för att fungera med wifikontrollen. Tanken är att ha tre olika ljuseffekter som man cyklar genom med "1"- trycket på flic'en. Alla funktionerfinns i <em>colorfunctions.ino</em>. Dessa är de olika ljuseffekterna jag tänkte använda:<br>
+    <ul>
+        <li><code class="language-cpp">animationSolidColor(uint32_t <var>color</var>);</code> Visa en statisk färg</li>
+        <li><code class="language-cpp">animationRainbow(uint8_t <var>waitInMilliseconds</var>);</code> Visa en skiftande färgcykel</li>
+        <li><code class="language-cpp">animationTheaterChase(uint32_t <var>color</var>, uint8_t <var>waitInMilliseconds</var>);</code> Visa en blinkande "orm"</li>
+        <li><code class="language-cpp">animationCountdown(uint32_t <var>color</var>);</code> Visa en statisk färg som sakta tonar ned (till exempel nattlampa)</li>
+    </ul></p>
+        <figure> <pre><code class="language-cpp">
+#include &lt;Adafruit_NeoPixel.h&gt;
+#include &lt;WiFiEsp.h&gt;
+
+/* Emulate Serial1 on pins 6/7 if not present */
+#ifndef HAVE_HWSERIAL1
+#include "SoftwareSerial.h"
+SoftwareSerial Serial1(7, 6); // RX, TX
+#endif
+
+/* NeoPixel setup */
+const int         neopixelNumber = 24;
+const int         neopixelPin = 10;
+Adafruit_NeoPixel neopixel = Adafruit_NeoPixel(neopixelNumber, neopixelPin, NEO_GRB + NEO_KHZ800);
+
+
+/* Wifi esp8266 setup */
+WiFiEspServer wifiServer(80);                         // The webserver
+RingBuffer    wifiReciveBuffer(16);                   // Use a small ring buffer to increase speed and reduce memory allocation
+const char    wifiStationName[] = "wifi-name";        // Your network SSID (name)
+const char    wifiPassword[] = "wifi-password";       // Your network PSK password
+int           wifiStatus = WL_IDLE_STATUS;            // The status of wifi module
+
+/* Light and color setup */
+int       lightMode = 0;                               // The current lightmode (the different display functions)
+const int lightModeNumber = 5;                         // The number of light modes
+uint32_t  lightColor = neopixel.Color(255, 255, 255);  // The current color
+int       lightFadeDelay = 100;                        // Delay in milliseconds for colorfade
+int       lightWheelPosition = 0;                      // The current position on the colorwheel
+
+/* Information and warning light */
+bool feedbackBootPulse = true;    // Bool if to show lightpulses when booting
+bool feedbackLoadingPulse = true; // Bool if to show lightpulses when loading
+bool feedbackErrorPulse = true;   // Bool if to show lightpulses when error accur
+bool feedbackInfoPulse = true;    // Bool if to show lightpulses when changing light modes
+
+uint32_t feedbackColorBootPulse = neopixel.Color(100, 255, 0);
+uint32_t feedbackColorLoadingPulse = neopixel.Color(100, 50, 0);
+uint32_t feedbackColorErrorPulse = neopixel.Color(255, 20, 0);
+uint32_t feedbackColorInfoPulse = neopixel.Color(30, 0, 100);
+</code></pre><figcaption>pixelring.ino</figcaption></figure>
+<p>Vi börjar med instansiering av pixelringen samt definerar alla nödvändiga variabler. Viktigast att ändra är antalet av pixlar i pixelringen om du har en annan variant än 24 st,
+samt att sätta wifinamn och lösenord. <em>feedback*</em> variablerna styr blinkningarna som sker för att markera byte av ljusfunktion och vid uppstart, färg kan ändras och stängas av genom
+att sätta boolean till false.</p>
+        <figure> <pre><code class="language-cpp"></code></pre><figcaption></figcaption></figure>
+ <h3>Skicka kommandon över wifi med ESP-8266</h3>
+<p>
+</p>
+    <p> <a href="https://playground.arduino.cc/Main/ArduinoOnOtherAtmelChips" target="_blank">Arduino on other Chips</a> </p>
+    <footer> <address>
+            Kontakta mig på <a href="mailto:charlie.habolin@monkcs.se?subject=Bloggen">charlie.habolin@monkcs.se</a> om du har någon fråga!
+        </address> </footer>
+</article>
