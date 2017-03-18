@@ -60,13 +60,16 @@ void loop() {
             <source src="https://download.blender.org/peach/bigbuckbunny_movies/big_buck_bunny_720p_stereo.ogg"> </video>
         <figcaption>Växelvis loopande färg</figcaption>
     </figure>
-    <p> Adafruit har skrivit några behjälpliga exempelfunktioner som jag tänker använda i detta projekt. Dessa finns i att hitta under <em>Fil > Exempel > Adafruit NeoPixel > strandtest</em>. I denna sketch finns lite olika typer av ljuseffekter till exempel regnbågsskiftande cykler, dom är något modifierade för att fungera med wifikontrollen. Tanken är att ha tre olika ljuseffekter som man cyklar genom med "1"- trycket på flic'en. Alla funktionerfinns i <em>colorfunctions.ino</em>. Dessa är de olika ljuseffekterna jag tänkte använda:<br>
+    <p> Adafruit har skrivit några behjälpliga exempelfunktioner som jag tänker använda i detta projekt. Dessa finns i att hitta under <em>Fil > Exempel > Adafruit NeoPixel > strandtest</em>. I denna sketch finns lite olika typer av ljuseffekter till exempel regnbågsskiftande cykler, dom är något modifierade för att fungera med wifikontrollen. Tanken är att ha tre olika ljuseffekter som man cyklar genom med "1"- trycket på flic'en. Alla funktioner finns i <em>colorfunctions.ino</em>. Dessa är de olika ljuseffekterna jag tänkte använda:<br>
     <ul>
         <li><code class="language-cpp">animationSolidColor(uint32_t <var>color</var>);</code> Visa en statisk färg</li>
         <li><code class="language-cpp">animationRainbow(uint8_t <var>waitInMilliseconds</var>);</code> Visa en skiftande färgcykel</li>
         <li><code class="language-cpp">animationTheaterChase(uint32_t <var>color</var>, uint8_t <var>waitInMilliseconds</var>);</code> Visa en blinkande "orm"</li>
         <li><code class="language-cpp">animationCountdown(uint32_t <var>color</var>);</code> Visa en statisk färg som sakta tonar ned (till exempel nattlampa)</li>
     </ul></p>
+    <p>Vi börjar med instansiering av pixelringen samt definerar alla nödvändiga variabler. Om koden kompileras till Arduino Uno kommer vi använda <code class="language-cpp">SoftwareSerial</code> biblioteket då Uno inte har en andra fysisk seriellport. Viktigast att ändra är antalet av pixlar i pixelringen om du har en annan variant än 24 st,
+    samt att sätta wifinamn och lösenord. <em>feedback*</em> variablerna styr blinkningarna som sker för att markera byte av ljusfunktion och vid uppstart, färg kan ändras och stängas av genom
+    att sätta boolean till false.</p>
         <figure> <pre><code class="language-cpp">
 #include &lt;Adafruit_NeoPixel.h&gt;
 #include &lt;WiFiEsp.h&gt;
@@ -82,7 +85,6 @@ const int         neopixelNumber = 24;
 const int         neopixelPin = 10;
 Adafruit_NeoPixel neopixel = Adafruit_NeoPixel(neopixelNumber, neopixelPin, NEO_GRB + NEO_KHZ800);
 
-
 /* Wifi esp8266 setup */
 WiFiEspServer wifiServer(80);                         // The webserver
 RingBuffer    wifiReciveBuffer(16);                   // Use a small ring buffer to increase speed and reduce memory allocation
@@ -94,7 +96,9 @@ int           wifiStatus = WL_IDLE_STATUS;            // The status of wifi modu
 int       lightMode = 0;                               // The current lightmode (the different display functions)
 const int lightModeNumber = 5;                         // The number of light modes
 uint32_t  lightColor = neopixel.Color(255, 255, 255);  // The current color
+int       lightColorStep = 24;                         // The number of step on color wheel a light change will do
 int       lightFadeDelay = 100;                        // Delay in milliseconds for colorfade
+int       lightFadeDelayModulus = 1500;                // The owerflow point for fade delay
 int       lightWheelPosition = 0;                      // The current position on the colorwheel
 
 /* Information and warning light */
@@ -108,15 +112,59 @@ uint32_t feedbackColorLoadingPulse = neopixel.Color(100, 50, 0);
 uint32_t feedbackColorErrorPulse = neopixel.Color(255, 20, 0);
 uint32_t feedbackColorInfoPulse = neopixel.Color(30, 0, 100);
 </code></pre><figcaption>pixelring.ino</figcaption></figure>
-<p>Vi börjar med instansiering av pixelringen samt definerar alla nödvändiga variabler. Viktigast att ändra är antalet av pixlar i pixelringen om du har en annan variant än 24 st,
-samt att sätta wifinamn och lösenord. <em>feedback*</em> variablerna styr blinkningarna som sker för att markera byte av ljusfunktion och vid uppstart, färg kan ändras och stängas av genom
-att sätta boolean till false.</p>
-        <figure> <pre><code class="language-cpp"></code></pre><figcaption></figcaption></figure>
+<p>I <code class="language-cpp">setup()</code> startar vi neopixeln och visar en boot- ljuspuls. Båda seriellportarna startas och sedan wifi modulen,
+   om anslutningen till wifinätet lyckas startas sedan webservern på port 80.</p>
+        <figure> <pre><code class="language-cpp">void setup()
+{
+  /* Special code for AT Tiny85 5V 16MHz */
+#if defined (__AVR_ATtiny85__)
+  if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
+#endif
+
+  neopixel.begin();
+  neopixel.show();
+  animationPulse(1, feedbackColorBootPulse, feedbackBootPulse); // Show booting light
+
+  Serial.begin(9600);                       // Initialize serial for debugging
+  Serial1.begin(9600);                      // Initialize serial for ESP module
+  WiFi.init(&Serial1);                      // Initialize ESP module
+
+  if (WiFi.status() == WL_NO_SHIELD) {
+    // If no wifi detected, don't continue further, just blink red
+    while (true) {
+      animationPulse(1, feedbackColorErrorPulse, feedbackErrorPulse); // Show loading light
+    }
+  }
+
+  // Attempt to connect to Wifi network
+  while (wifiStatus != WL_CONNECTED) {
+    animationPulse(1, feedbackColorLoadingPulse, feedbackLoadingPulse);
+    wifiStatus = WiFi.begin(wifiStationName, wifiPassword);
+  }
+
+  printWifiDetails();
+  wifiServer.begin();                                            // Start the web server on port 80
+  animationPulse(2, feedbackColorInfoPulse, feedbackInfoPulse);  // Show succes light
+}</code></pre><figcaption>pixelring.ino</figcaption></figure>
+   <figure> <pre><code class="language-cpp"></code></pre><figcaption>pixelring.ino</figcaption></figure>
  <h3>Skicka kommandon över wifi med ESP-8266</h3>
 <p>
+  Flic är en batteridriven knapp från <a href="https://flic.io">Shortcut labs</a> som kommunicerar via Bluetooth Low Energy till en smartphone. Den har möjlighet till enkel-, dubbel- och långtryck som
+  man kan associera med olika funktioner, till exempel http förfrågning som jag kommer använda med ESP8266 för att styra pixelringen. Knappen fungerar bara dock då telefonen är i närheten
+  samt har bluetooth aktiverat. Kommandona konfigureras via flic-appen som finns på <a href="https://start.flic.io/">Google play och App store</a>.
 </p>
+<figure>
+  <img src="graphics/flic-app-actions-setup-1.png" alt=""/>
+  <img src="graphics/flic-app-actions-setup-2.png" alt=""/>
+  <img src="graphics/flic-app-actions-setup-3.png" alt=""/>
+  <img src="graphics/flic-app-actions-setup-4.png" alt=""/>
+  <img src="graphics/flic-app-actions-setup-5.png" alt=""/>
+  <img src="graphics/flic-app-actions-setup-6.png" alt=""/>
+    <figcaption>Färdigställd arduinoproject som styrs via wifi</figcaption>
+</figure>
     <p> <a href="https://playground.arduino.cc/Main/ArduinoOnOtherAtmelChips" target="_blank">Arduino on other Chips</a> </p>
     <footer> <address>
             Kontakta mig på <a href="mailto:charlie.habolin@monkcs.se?subject=Bloggen">charlie.habolin@monkcs.se</a> om du har någon fråga!
+            <figure> <pre><code class="language-cpp"></code></pre><figcaption>pixelring.ino</figcaption></figure>
         </address> </footer>
 </article>
