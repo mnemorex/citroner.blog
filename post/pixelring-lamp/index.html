@@ -4,7 +4,7 @@
         <h1 lang="sv">Neopixellampa som trådlöst styrs från en Flic-knapp</h1>
         <h1 lang="en">Neopixel lamp wirelessly controlled from a Flic button</h1> <img src="/graphics/authors/charlie-habolin.jpg"> <span>Charlie Habolin</span>
         <br/>
-        <time datetime="2017-02-01T15:00">01 februari 2017. 15:00</ti+01:00me>
+        <time datetime="2017-02-01T15:00">01 februari 2017. 15:00</time>
     </header>
     <p> Med endast en neopixelring + en arduino kan man bygga en radiokontrollerad rgb-lampa. </p> INSERT REQURIMENTS LIST
     <p> I detta projekt använder jag en <a href="https://learn.adafruit.com/adafruit-neopixel-uberguide/neopixel-rings" target="_blank">Adafruit neopixelring</a> med 24 rgb-lysdioder som alla är indviduellt programerbara. Det finns förutom ringar även som matriser och remsor, men ringvarianten passar bra då min lamparmatur nästan precis matchar diametern på pixelringen! </p>
@@ -18,7 +18,8 @@
     <h3>Exempel på styrning av Neopixel</h3>
     <p> Adafruit tillhandahåller ett <a href="https://learn.adafruit.com/adafruit-neopixel-uberguide/arduino-library-installation" target="_blank">bibliotek</a> för att enkelt styra alla deras NeoPixel-tillbehör. Detta installeras enklast (om du använder <a href="https://www.arduino.cc/en/Main/Software" target="_blank">Arduino IDE</a>) via bibliotekshanteraren under <em>Skiss > Inkludera bibliotek > Hantera bibliotek</em> där det bara är att söka efter "Adafruit Neopixel" och välja <em>Installera</em>. </p>
     <p> För styrning använder vi en blank arduinosketch och importerar neopixel-biblioteket <code class="language-cpp">#include &lt;Adafruit_NeoPixel.h&gt;</code>. Sedan definerar vi två konstanter, antalet lysdioder på vår ring som i det här fallet är 24 och pin för att kommunicera med till nummer sex. Du kan ändra detta till valfri digital I/O pin om sex är upptagen.</p>
-    <figure> <pre><code class="language-cpp">#include &lt;Adafruit_NeoPixel.h&gt;
+    <figure>
+        <pre><code class="language-cpp">#include &lt;Adafruit_NeoPixel.h&gt;
 
 /* NeoPixel setup */
 const int neopixelNumber = 24;
@@ -61,16 +62,16 @@ void loop() {
         <figcaption>Växelvis loopande färg</figcaption>
     </figure>
     <p> Adafruit har skrivit några behjälpliga exempelfunktioner som jag tänker använda i detta projekt. Dessa finns i att hitta under <em>Fil > Exempel > Adafruit NeoPixel > strandtest</em>. I denna sketch finns lite olika typer av ljuseffekter till exempel regnbågsskiftande cykler, dom är något modifierade för att fungera med wifikontrollen. Tanken är att ha tre olika ljuseffekter som man cyklar genom med "1"- trycket på flic'en. Alla funktioner finns i <em>colorfunctions.ino</em>. Dessa är de olika ljuseffekterna jag tänkte använda:<br>
-    <ul>
-        <li><code class="language-cpp">animationSolidColor(uint32_t <var>color</var>);</code> Visa en statisk färg</li>
-        <li><code class="language-cpp">animationRainbow(uint8_t <var>waitInMilliseconds</var>);</code> Visa en skiftande färgcykel</li>
-        <li><code class="language-cpp">animationTheaterChase(uint32_t <var>color</var>, uint8_t <var>waitInMilliseconds</var>);</code> Visa en blinkande "orm"</li>
-        <li><code class="language-cpp">animationCountdown(uint32_t <var>color</var>);</code> Visa en statisk färg som sakta tonar ned (till exempel nattlampa)</li>
-    </ul></p>
-    <p>Vi börjar med instansiering av pixelringen samt definerar alla nödvändiga variabler. Om koden kompileras till Arduino Uno kommer vi använda <code class="language-cpp">SoftwareSerial</code> biblioteket då Uno inte har en andra fysisk seriellport. Viktigast att ändra är antalet av pixlar i pixelringen om du har en annan variant än 24 st,
-    samt att sätta wifinamn och lösenord. <em>feedback*</em> variablerna styr blinkningarna som sker för att markera byte av ljusfunktion och vid uppstart, färg kan ändras och stängas av genom
-    att sätta boolean till false.</p>
-        <figure> <pre><code class="language-cpp">
+        <ul>
+            <li><code class="language-cpp">animationSolidColor(uint32_t <var>color</var>);</code> Visa en statisk färg</li>
+            <li><code class="language-cpp">animationRainbow(uint8_t <var>waitInMilliseconds</var>);</code> Visa en skiftande färgcykel</li>
+            <li><code class="language-cpp">animationTheaterChase(uint32_t <var>color</var>, uint8_t <var>waitInMilliseconds</var>);</code> Visa en blinkande "orm"</li>
+            <!--<li><code class="language-cpp">animationCountdown(uint32_t <var>color</var>);</code> Visa en statisk färg som sakta tonar ned (till exempel nattlampa)</li>-->
+        </ul>
+    </p>
+    <p>Vi börjar med instansiering av pixelringen samt definerar alla nödvändiga variabler. Om koden kompileras till Arduino Uno kommer vi använda <code class="language-cpp">SoftwareSerial</code> biblioteket då Uno inte har en andra fysisk seriellport. Viktigast att ändra är antalet av pixlar i pixelringen om du har en annan variant än 24 st, samt att sätta wifinamn och lösenord. <em>feedback*</em> variablerna styr blinkningarna som sker för att markera byte av ljusfunktion och vid uppstart, färg kan ändras och stängas av genom att sätta boolean till false.</p>
+    <figure>
+        <pre><code class="language-cpp">
 #include &lt;Adafruit_NeoPixel.h&gt;
 #include &lt;WiFiEsp.h&gt;
 
@@ -111,10 +112,12 @@ uint32_t feedbackColorBootPulse = neopixel.Color(100, 255, 0);
 uint32_t feedbackColorLoadingPulse = neopixel.Color(100, 50, 0);
 uint32_t feedbackColorErrorPulse = neopixel.Color(255, 20, 0);
 uint32_t feedbackColorInfoPulse = neopixel.Color(30, 0, 100);
-</code></pre><figcaption>pixelring.ino</figcaption></figure>
-<p>I <code class="language-cpp">setup()</code> startar vi neopixeln och visar en boot- ljuspuls. Båda seriellportarna startas och sedan wifi modulen,
-   om anslutningen till wifinätet lyckas startas sedan webservern på port 80.</p>
-        <figure> <pre><code class="language-cpp">void setup()
+</code></pre>
+        <figcaption>pixelring.ino</figcaption>
+    </figure>
+    <p>I <code class="language-cpp">setup()</code> startar vi neopixeln och visar en boot- ljuspuls. Båda seriellportarna startas och sedan wifi modulen, om anslutningen till wifinätet lyckas startas sedan webservern på port 80.</p>
+    <figure>
+        <pre><code class="language-cpp">void setup()
 {
   /* Special code for AT Tiny85 5V 16MHz */
 #if defined (__AVR_ATtiny85__)
@@ -145,23 +148,68 @@ uint32_t feedbackColorInfoPulse = neopixel.Color(30, 0, 100);
   printWifiDetails();
   wifiServer.begin();                                            // Start the web server on port 80
   animationPulse(2, feedbackColorInfoPulse, feedbackInfoPulse);  // Show succes light
-}</code></pre><figcaption>pixelring.ino</figcaption></figure>
-   <figure> <pre><code class="language-cpp"></code></pre><figcaption>pixelring.ino</figcaption></figure>
- <h3>Skicka kommandon över wifi med ESP-8266</h3>
-<p>
-  Flic är en batteridriven knapp från <a href="https://flic.io">Shortcut labs</a> som kommunicerar via Bluetooth Low Energy till en smartphone. Den har möjlighet till enkel-, dubbel- och långtryck som
-  man kan associera med olika funktioner, till exempel http förfrågning som jag kommer använda med ESP8266 för att styra pixelringen. Knappen fungerar bara dock då telefonen är i närheten
-  samt har bluetooth aktiverat. Kommandona konfigureras via flic-appen som finns på <a href="https://start.flic.io/">Google play och App store</a>.
-</p>
-<figure>
-  <img src="graphics/flic-app-actions-setup-1.png" alt=""/>
-  <img src="graphics/flic-app-actions-setup-2.png" alt=""/>
-  <img src="graphics/flic-app-actions-setup-3.png" alt=""/>
-  <img src="graphics/flic-app-actions-setup-4.png" alt=""/>
-  <img src="graphics/flic-app-actions-setup-5.png" alt=""/>
-  <img src="graphics/flic-app-actions-setup-6.png" alt=""/>
-    <figcaption>Färdigställd arduinoproject som styrs via wifi</figcaption>
-</figure>
+}</code></pre>
+        <figcaption>pixelring.ino</figcaption>
+    </figure>
+
+    <h3>Skicka kommandon över wifi med ESP-8266</h3>
+    <p>
+        <table>
+            <tr>
+                <td><code class="language-uri">/lm.n~</code></td>
+                <td>LightMode : Next</td>
+            </tr>
+            <tr>
+                <td><code class="language-uri">/lm.p~</code></td>
+                <td>LightMode : Previous</td>
+            </tr>
+            <tr>
+                <td><code class="language-uri">/lm.i-x~</code></td>
+                <td>LightMode : Index (0 &le; <var>x</var> &le; 999)</td>
+                <td>Valfritt index exempelvis <var>002</var></td>
+            </tr>
+            <tr>
+                <td><code class="language-uri">/lc.n~</code></td>
+                <td>LightColor : Next</td>
+            </tr>
+            <tr>
+                <td><code class="language-uri">/lc.p~</code></td>
+                <td>LightColor : Previous</td>
+            </tr>
+            <tr>
+                <td><code class="language-uri">/lc.c-x~</code></td>
+                <td>LightColor: RGB Color <var>x</var> = rrrgggbbb</td>
+                <td>Valfri rgb-färg exempelvis <code style="box-shadow: inset 0 0 0 100rem rgb(88, 212, 148)"><var>088212148</var></code></td>
+            </tr>
+            <tr>
+                <td><code class="language-uri">/ad.n~</code></td>
+                <td>LightColor : Next</td>
+            </tr>
+            <tr>
+                <td><code class="language-uri">/ad.p~</code></td>
+                <td>LightColor : Previous</td>
+            </tr>
+            <tr>
+                <td><code class="language-uri">/ad.d-x~</code></td>
+                <td>AnimationDelay: Time <var>x</var> = 0000</td>
+                <td>Valfri tid i millisekunder exempelvis <var>0800</var></td>
+            </tr>
+        </table>
+    </p>
+    <p>
+        Flic är en batteridriven knapp från <a href="https://flic.io">Shortcut labs</a> som kommunicerar via Bluetooth Low Energy till en smartphone. Den har möjlighet till enkel-, dubbel- och långtryck som man kan associera med olika funktioner, till exempel http förfrågning som jag kommer använda med ESP8266 för att styra pixelringen. Knappen fungerar bara dock då telefonen är i närheten samt har bluetooth aktiverat. Kommandona konfigureras via flic-appen som finns på <a href="https://start.flic.io/">Google play och App store</a>.
+    </p>
+    <figure>
+        <div class="scrollview">
+            <img src="graphics/flic-app-actions-setup-1.png" alt="Steg 1" />
+            <img src="graphics/flic-app-actions-setup-2.png" alt="Steg 2" />
+            <img src="graphics/flic-app-actions-setup-3.png" alt="Steg 3" />
+            <img src="graphics/flic-app-actions-setup-4.png" alt="Steg 4" />
+            <img src="graphics/flic-app-actions-setup-5.png" alt="Steg 5" />
+            <img src="graphics/flic-app-actions-setup-6.png" alt="Steg 6" />
+        </div>
+        <figcaption>Steg för att till http förfrågning som knappfunktion</figcaption>
+    </figure>
     <p> <a href="https://playground.arduino.cc/Main/ArduinoOnOtherAtmelChips" target="_blank">Arduino on other Chips</a> </p>
     <footer> <address>
             Kontakta mig på <a href="mailto:charlie.habolin@monkcs.se?subject=Bloggen">charlie.habolin@monkcs.se</a> om du har någon fråga!

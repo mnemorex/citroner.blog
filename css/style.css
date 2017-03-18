@@ -7,7 +7,7 @@
 
     @import url('../font/font-blogger-sans/font-blogger-sans.css');
     @import url('../font/font-noto-sans/font-noto-sans.css');
-    :root {
+     :root {
         /* https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables */
         --font-color: #191e28;
         --font-color-gray: #3d3d3d;
@@ -32,7 +32,8 @@
     aside,
     a,
     header img,
-    label.navigation-toggle {
+    label.navigation-toggle,
+    img {
         transition: all 0.4s ease-in-out;
     }
 
@@ -78,7 +79,7 @@
         font-size: var(--font-size-h6);
     }
 
-    body > header {
+    body>header {
         box-shadow: inset 0 0 0 100rem #ffe97c;
         height: 6rem;
         color: white;
@@ -88,7 +89,7 @@
         justify-content: center;
     }
 
-    body > header > h1 {
+    body>header>h1 {
         font-size: var(--font-size-site-header);
         margin-top: 0;
     }
@@ -155,7 +156,7 @@
         padding-left: 1.3rem;
     }
 
-    nav ul ul > li {
+    nav ul ul>li {
         margin-bottom: 0.6rem;
         font-family: 'Noto Sans', sans-serif;
         font-size: var(--font-size);
@@ -163,12 +164,12 @@
         word-wrap: break-word;
     }
 
-    nav ul ul > li::before {
+    nav ul ul>li::before {
         content: "# ";
     }
 
     article,
-    main > mark {
+    main>mark {
         display: block;
         margin-left: 2rem;
         margin-right: 2rem;
@@ -180,7 +181,7 @@
         counter-reset: section;
     }
 
-    main > mark {
+    main>mark {
         margin-top: 3rem;
     }
 
@@ -191,7 +192,8 @@
 
     img,
     video,
-    audio {
+    audio,
+    table {
         width: 100%;
         display: block;
     }
@@ -226,7 +228,7 @@
         font-weight: bold;
     }
 
-    article header img:hover ~ span {
+    article header img:hover~span {
         flont-size: var(--font-size-h3);
     }
 
@@ -326,8 +328,11 @@
 
     code,
     var {
-        box-shadow: inset 0 0 0 100rem #f5f2f0;
         font-size: calc(var(--font-size) - 2px);
+    }
+
+    code {
+        box-shadow: inset 0 0 0 100rem #f5f2f0;
     }
 
     code,
@@ -347,9 +352,21 @@
         overflow-x: auto;
     }
 
-    figure img:not(:only-of-type) {
-      filter: blur(2px);
+    div.scrollview {
+        display: flex;
+        align-content: flex-start;
+        overflow-x: scroll;
     }
+
+    figure img:not(:only-of-type) {
+        max-height: 500px;
+        width: auto;
+        border-left-color: var(--font-color);
+        border-left-width: medium;
+        border-left-style: solid;
+    }
+
+    figure:hover img:not(:only-of-type):not(:hover) {}
 
     figure code {
         display: block;
@@ -362,8 +379,8 @@
         padding: 1.2rem 1rem 1.2rem 2.5rem;
     }
 
-    code + figcaption,
-    pre + figcaption {
+    code+figcaption,
+    pre+figcaption {
         font-family: monospace;
         font-size: calc(var(--font-size) - 2px);
     }
@@ -401,6 +418,10 @@
     cite {
         box-shadow: inset 0 0 0 100rem #efeafa;
     }
+
+    table {}
+
+    td:first-child {}
     /* -- LANGUAGE SETUP START  -- */
     /*
     html:lang(sv) *:not(:lang(sv))) {
@@ -414,15 +435,15 @@
 
     html:lang(en) aside *:not(:lang(en)),
     html:lang(en) article h1:not(:lang(en)),
-    html:lang(en) *:not(:lang(en))[data-lang-localized="true"]  {
+    html:lang(en) *:not(:lang(en))[data-lang-localized="true"] {
         display: none;
     }
+
     html:lang(sv) aside *:not(:lang(sv)),
     html:lang(sv) article h1:not(:lang(sv)),
     html:lang(sv) *:not(:lang(sv))[data-lang-localized="true"] {
         display: none;
     }
-
     /**:lang(sv):before {
         content: "SV";
         position: absolute;
@@ -466,12 +487,12 @@
         html {
             overflow-x: hidden;
         }
-        body > header {
+        body>header {
             height: 5.5rem;
             display: flex;
             justify-content: center;
         }
-        body > header > h1 {
+        body>header>h1 {
             font-size: calc(var(--font-size-site-header) - 0.5rem);
             margin-top: 0.5rem;
         }
@@ -491,18 +512,18 @@
         label.navigation-toggle {
             display: block;
         }
-        #navigation-toggle:checked ~ aside {
+        #navigation-toggle:checked~aside {
             transform: translateX(0%);
         }
-        #navigation-toggle:checked ~ aside ~ main {
+        #navigation-toggle:checked~aside~main {
             transform: translateX(0%);
             filter: opacity(0.8) sepia(0.3) brightness(0.8);
             pointer-events: none;
         }
-        #navigation-toggle:checked ~ aside ~ main label.navigation-toggle {
+        #navigation-toggle:checked~aside~main label.navigation-toggle {
             opacity: 0;
         }
-        #navigation-toggle:not(:checked) ~ aside label.navigation-toggle {
+        #navigation-toggle:not(:checked)~aside label.navigation-toggle {
             opacity: 0;
         }
     }
@@ -517,7 +538,7 @@
             font-size: calc(var(--font-size) - 2px);
         }
         article,
-        main > mark {
+        main>mark {
             margin-left: 1rem;
             margin-right: 1rem;
         }

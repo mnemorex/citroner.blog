@@ -10,7 +10,7 @@ window.onload = function () {
         fetchArticle("/", true);
     }
     setupEvents();
-    setupServiceWorker();
+    //setupServiceWorker();
     fetch("/post/index-articles.html").then(validate).then(insertArticleIndex).catch(riseError);
 };
 window.onpopstate = function (event) {
