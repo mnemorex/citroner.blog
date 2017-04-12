@@ -13,7 +13,7 @@ window.onload = function () {
 
     // Setup event and services
     setupEvents();
-    //setupServiceWorker();
+    setupServiceWorker();
 
     // Load side-panel
     fetch("/post/index-articles.html").then(validate).then(insertArticleIndex).catch(riseError);
