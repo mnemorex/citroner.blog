@@ -141,10 +141,11 @@ function insertArticle(rawHtmlText) {
         body.insertAdjacentHTML('beforeend', rawHtmlText);
         registerClickEvent();
     }
+}
 
-    function insertArticleIndex(rawHtmlText) {
-        var articleIndex = document.getElementById("article-index");
-        articleIndex.innerHTML = "";
-        articleIndex.insertAdjacentHTML('beforeend', rawHtmlText);
-        registerClickEvent();
-    }
+function insertArticleIndex(rawHtmlText) {
+    var articleIndex = document.getElementById("article-index");
+    articleIndex.innerHTML = "";
+    articleIndex.insertAdjacentHTML('beforeend', rawHtmlText);
+    registerClickEvent();
+}
