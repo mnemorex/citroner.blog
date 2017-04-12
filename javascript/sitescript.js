@@ -2,6 +2,8 @@
 window.onload = function () {
     'use strict';
     console.log("Javascript: DOM loaded");
+    
+    // Read hash on url and fetch article
     var hash = window.location.hash.substring(1);
     if (hash != "" && hash.startsWith("/post/")) {
         fetchArticle(hash, true);
@@ -9,8 +11,12 @@ window.onload = function () {
     else {
         fetchArticle("/", true);
     }
+    
+    // Setup event and services
     setupEvents();
     //setupServiceWorker();
+    
+    // Load side-panel
     fetch("/post/index-articles.html").then(validate).then(insertArticleIndex).catch(riseError);
 };
 window.onpopstate = function (event) {
@@ -29,6 +35,8 @@ function setupEvents() {
 function registerClickEvent() {
     'use strict';
     console.log("Javascript: setting up document events");
+    
+    // Setup click event for all links in the document
     var links = document.getElementsByTagName("a");
     for (var counter = 0; counter < links.length; ++counter) {
         links[counter].addEventListener("click", linkRelay);
@@ -49,7 +57,7 @@ function setupServiceWorker() {
             }
             console.log('ServiceWorker scope: ', registration.scope);
         }).catch(function (error) {
-            // Registration failed
+            // Serviceworker registration failed
             console.error('ServiceWorker registration failed: ', error);
         });
     }
@@ -57,9 +65,9 @@ function setupServiceWorker() {
 // Check if link is heading for another article and if so, fade to that page insteat of jump
 function linkRelay(event) {
     if (event.target.pathname.startsWith("/post/")) {
+        event.preventDefault();
         document.getElementsByTagName("main")[0].classList.add("hide");
         document.getElementById("navigation-toggle").checked = false;
-        event.preventDefault();
         fetchArticle(event.target.href, false);
     }
 }
