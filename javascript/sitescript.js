@@ -6,7 +6,7 @@ window.onload = function () {
     // Read hash on url and fetch article
     var hash = window.location.hash.substring(1);
     if (hash != "" && hash.startsWith("/post/")) {
-        fetchArticle(hash, true);
+        fetchArticle(hash + window.location.search, true);
     } else {
         fetchArticle("/", true);
     }
@@ -103,12 +103,18 @@ function validate(response) {
 
 function riseError(error) {
     console.log('There has been a problem with a fetch operation: ' + error);
+    try {
     document.getElementsByTagName("main")[0].classList.remove("hide");
+    } catch (errorCatch) { }
+
 }
 
 function offlineMessage() {
     console.log('There has been a problem with a fetch operation');
+    try {
     document.getElementsByTagName("main")[0].classList.remove("hide");
+        } catch (errorCatch) { }
+
     fetch("/post/offline").then(validate).then(insertArticle);
 }
 
@@ -140,6 +146,16 @@ function insertArticle(rawHtmlText) {
         body.innerHTML = "";
         body.insertAdjacentHTML('beforeend', rawHtmlText);
         registerClickEvent();
+        try{
+        var entrypoint = document.getElementById("javascript-entrypoint");
+        if(entrypoint != null) {
+            eval(entrypoint.innerHTML);
+        }
+        }
+        catch (errorCatch) {
+            console.error("Error running eval");
+            alert("Error: error parsing script")
+        }
     }
 }
 

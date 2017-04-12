@@ -1,5 +1,43 @@
 <article data-author-id="monkcs" data-shellstyle="purge" lang="sv">
+    <script id="javascript-entrypoint">
+        'use strict';
+
+        function getParameterByName(name, url) {
+            if (!url) {
+                url = window.location.href;
+            }
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+        var parameter = getParameterByName("f", null);
+        // f as in friend
+        if (parameter != null) {
+            document.getElementById("friend-name").innerHTML = encodeURIComponent(atob(parameter));
+        }
+
+    </script>
     <script src="/javascript/shellcheck.js"></script>
-    <link rel="stylesheet" type="text/css" href="style/style-local.css" />
-    <img src="graphics/kyckling.svg">
+
+    <link rel="stylesheet" type="text/css" href="css/style-local.css" />
+    <header>
+        <h1>Glad Påsk <span id="friend-name">Charlie</span> 🎉<br>
+            <span class="monkcs">
+                Av Charlie <a href="https://github.com/monkcs">@monkcs</a>
+            </span>
+        </h1>
+        <img src="graphics/kyckling.svg" class="animated infinite bounce">
+    </header>
+    <figure class="right">
+        <img class="animated infinite pulse egg-small" src="graphics/egg.svg">
+    </figure>
+    <figure class="left">
+        <img class="animated infinite pulse egg-medium" src="graphics/egg.svg">
+    </figure>
+    <figure class="middle">
+        <img class="animated infinite pulse egg-big" src="graphics/egg.svg">
+    </figure>
 </article>
