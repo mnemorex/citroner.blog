@@ -127,14 +127,14 @@ function insertArticle(rawHtmlText) {
         // Hide the website shell, but keep stylesheet
         var mainStylesheet = document.getElementsByClassName("main-stylesheet");
         for (var counter = 0; counter < mainStylesheet.length; ++counter) {
-            mainStylesheet[counter].disable = true;
+            mainStylesheet[counter].remove();
         }
     }
     if (shellStylePurge) {
         // Hide the website shell, and don't keep main stylesheet
         var mainStylesheet = document.getElementsByClassName("main-stylesheet");
         for (var counter = 0; counter < mainStylesheet.length; ++counter) {
-            mainStylesheet[counter].disable = true;
+            mainStylesheet[counter].remove();
         }
         var body = document.getElementsByTagName("body")[0];
         body.innerHTML = "";
