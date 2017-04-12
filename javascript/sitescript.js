@@ -2,20 +2,19 @@
 window.onload = function () {
     'use strict';
     console.log("Javascript: DOM loaded");
-    
+
     // Read hash on url and fetch article
     var hash = window.location.hash.substring(1);
     if (hash != "" && hash.startsWith("/post/")) {
         fetchArticle(hash, true);
-    }
-    else {
+    } else {
         fetchArticle("/", true);
     }
-    
+
     // Setup event and services
     setupEvents();
     //setupServiceWorker();
-    
+
     // Load side-panel
     fetch("/post/index-articles.html").then(validate).then(insertArticleIndex).catch(riseError);
 };
@@ -35,7 +34,7 @@ function setupEvents() {
 function registerClickEvent() {
     'use strict';
     console.log("Javascript: setting up document events");
-    
+
     // Setup click event for all links in the document
     var links = document.getElementsByTagName("a");
     for (var counter = 0; counter < links.length; ++counter) {
@@ -48,11 +47,9 @@ function setupServiceWorker() {
         navigator.serviceWorker.register('/serviceworker.js').then(function (registration) {
             if (registration.installing) {
                 console.info('Service worker installing');
-            }
-            else if (registration.waiting) {
+            } else if (registration.waiting) {
                 console.info('Service worker installed, waiting for handover by old service worker');
-            }
-            else if (registration.active) {
+            } else if (registration.active) {
                 console.info('Service worker active');
             }
             console.log('ServiceWorker scope: ', registration.scope);
@@ -79,20 +76,17 @@ function fetchArticle(hrefToArticle, boolReplaceState) {
         };
         if (boolReplaceState) {
             history.replaceState(pathState, null, "/");
-        }
-        else {
+        } else {
             history.pushState(pathState, null, "/");
         }
         fetch("/feed.html").then(validate).then(insertArticle).catch(offlineMessage);
-    }
-    else {
+    } else {
         var pathState = {
             path: hrefToArticle
         };
         if (boolReplaceState) {
             history.replaceState(pathState, null, hrefToArticle);
-        }
-        else {
+        } else {
             history.pushState(pathState, null, hrefToArticle);
         }
         fetch(hrefToArticle).then(validate).then(insertArticle).catch(offlineMessage);
@@ -102,8 +96,7 @@ function fetchArticle(hrefToArticle, boolReplaceState) {
 function validate(response) {
     if (response.ok) {
         return response.text();
-    }
-    else {
+    } else {
         throw new Error('Network response was not ok.');
     }
 }
@@ -127,12 +120,31 @@ function insertArticle(rawHtmlText) {
     var main = document.getElementsByTagName("main")[0];
     main.insertAdjacentHTML('beforeend', rawHtmlText);
     document.getElementsByTagName("main")[0].classList.remove("hide");
-    registerClickEvent();
-}
 
-function insertArticleIndex(rawHtmlText) {
-    var articleIndex = document.getElementById("article-index");
-    articleIndex.innerHTML = "";
-    articleIndex.insertAdjacentHTML('beforeend', rawHtmlText);
-    registerClickEvent();
-}
+    var shellStyleNone = document.querySelector('article[data-shellstyle="none"]');
+    var shellStylePurge = document.querySelector('article[data-shellstyle="purge"]');
+    if (shellStyleNone) {
+        // Hide the website shell, but keep stylesheet
+        var mainStylesheet = document.getElementsByClassName("main-stylesheet");
+        for (var counter = 0; counter < mainStylesheet.length; ++counter) {
+            mainStylesheet[counter].disable = true;
+        }
+    }
+    if (shellStylePurge) {
+        // Hide the website shell, and don't keep main stylesheet
+        var mainStylesheet = document.getElementsByClassName("main-stylesheet");
+        for (var counter = 0; counter < mainStylesheet.length; ++counter) {
+            mainStylesheet[counter].disable = true;
+        }
+        var body = document.getElementsByTagName("body")[0];
+        body.innerHTML = "";
+        body.insertAdjacentHTML('beforeend', rawHtmlText);
+        registerClickEvent();
+    }
+
+    function insertArticleIndex(rawHtmlText) {
+        var articleIndex = document.getElementById("article-index");
+        articleIndex.innerHTML = "";
+        articleIndex.insertAdjacentHTML('beforeend', rawHtmlText);
+        registerClickEvent();
+    }
