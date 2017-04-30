@@ -34,11 +34,11 @@
     header img,
     label.navigation-toggle,
     img {
-        transition: all 0.4s ease-in-out;
+        transition: all 0.4s ease;
     }
 
     main {
-        transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+        transition: transform 0.4s ease, filter 1s ease;
     }
 
     body {
@@ -543,11 +543,11 @@ td:nth-child(2) {
         }
         #navigation-toggle:checked~aside~main {
             transform: translateX(0%);
-            filter: opacity(0.8) sepia(0.3) brightness(0.8);
+            filter: opacity(0.4);
             pointer-events: none;
         }
         #navigation-toggle:checked~aside~main label.navigation-toggle {
-            opacity: 0;
+            opacity: 0
         }
         #navigation-toggle:not(:checked)~aside label.navigation-toggle {
             opacity: 0;
