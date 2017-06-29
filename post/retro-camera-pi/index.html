@@ -1,0 +1,175 @@
+<article data-author-id="monkcs" lang="sv">
+    <script src="/javascript/shellcheck.js"></script>
+    <header>
+        <h1 lang="sv">Retro Camera Pi - En bärbar videokamera</h1>
+        <h1 lang="en">Retro Camera Pi - A handheld videocamera</h1>
+        <img src="/graphics/authors/charlie-habolin.jpg"> <span>Charlie Habolin</span>
+        <br/>
+        <time datetime="2001-05-15T19:00+01:00">15 maj 2001. 19:00</time>
+    </header>
+    <p>Jag blev intresserad när den uppdaterade modellen av Raspberry Pi Zero med <a href="">kameraanslutning</a> släpptes, att bygga någon form av egen kamera. Med zeron's lilla storlek kan man 3d-skriva en form till att innehålla en Raspberry Pi, kamera, batteri och laddningskrets. Kameran har ett utseende liknande en systemkamera, men fungerar tekniskt som en gammal videokamera där varje inspelat klipp sammanfogas till en lång kontinuerlig film.</p>
+
+    -bild på kameran
+    <figure>
+        <video loop muted autoplay>
+        <source src="http://clips.vorwaerts-gmbh.de/VfE_html5.webmö" type="video/webm">
+        <source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4ö" type="video/mp4">
+        </video>
+        <figcaption>Foto från kameran</figcaption>
+    </figure>
+
+    <h2>Det fysiska</h2>
+    -fritzing -cad  
+    -bild innuti
+    <figure>
+        <img src="graphics/all-parts.jpg" alt="Alla delar som behövdes för bygget" />
+    </figure>
+    <h2>Mjukvara</h2>
+    <p>Mjukvaran består av ett <a href="https://www.python.org/" target="_blank">Pythonskript</a> som sköter inspelning samt några bashskript för hantering av några systemfunktioner. Python skriptet körs om det är installerat som en deamon vid upstart. Jag använder mig av </p>
+    <figure>
+        <pre><code data-language="python">#!/usr/bin/env python3
+
+# The service script for Retro Camera Pi
+
+import picamera
+import os.path
+import subprocess
+from time import sleep
+from gpiozero import LED
+from gpiozero import Button
+from signal import pause
+
+# Setup camera
+# The camera object
+camera = picamera.PiCamera()
+# Custom resulution to use the whole x-axis field of view
+camera.resolution = (1640, 922)
+# The resolution supports high framerate
+camera.framerate = 40
+# The camera module is rotated
+camera.rotation = 90
+# Boolean if the virtual disk are connected as a usb device
+usbStorageInUse = False
+
+# Setup buttons
+# The shutter button to record
+buttonShutter = Button(17,False)
+# The button to toggle flashlight
+buttonFlashToggle = Button(4,False)
+# The button to toggle between camera and usb storage mode
+buttonStorageToggle = Button(18,False)
+
+# Setup led
+# The indicator on the back of the camera
+ledFlashIndicator = LED(16)
+# The indicator if the device is in camera or storage mode
+ledStorageToggle = LED(26)
+# The white flash on the front
+ledFlash = LED(5)
+
+def recordingStart():
+    global usbStorageInUse
+    global camera
+
+    if usbStorageInUse == False:
+        if ledFlashIndicator.is_lit:
+            ledFlash.on()
+        else:
+            ledFlash.off()
+
+        # Start recording
+        if os.path.exists("/mnt/usb-composite-virtualdisk/recording.mp4"):
+            camera.start_recording('/mnt/usb-composite-virtualdisk/temporary-recording.h264')
+        else:
+            camera.start_recording('/mnt/usb-composite-virtualdisk/recording.h264')
+
+def recordingEnd():
+    global usbStorageInUse
+    global camera
+
+    if usbStorageInUse == False:
+        # End recording
+        camera.stop_recording()
+        ledFlash.off()
+
+        # Show that encoding takes place
+        ledStorageToggle.off()
+        # Concatenate files if needed
+        if os.path.exists("/mnt/usb-composite-virtualdisk/recording.mp4"):
+            subprocess.call(["manage-video-convertion", "--concatenate","/mnt/usb-composite-virtualdisk/recording.mp4", "/mnt/usb-composite-virtualdisk/temporary-recording.h264", "/mnt/usb-composite-virtualdisk/recording.mp4"])
+        else:
+            subprocess.call(["manage-video-convertion", "--basefile", "/mnt/usb-composite-virtualdisk/recording.h264", "/mnt/usb-composite-virtualdisk/recording.mp4"])
+        ledStorageToggle.on()
+
+def massStorageToggle():
+    global usbStorageInUse
+
+    # Shutdown the system before pulling the power
+    if buttonFlashToggle.is_pressed:
+        ledStorageToggle.on()
+        ledFlashIndicator.on()
+        subprocess.call(["systemctl", "poweroff"])
+
+    if usbStorageInUse:
+        usbStorageInUse = False
+        massStorageDisable()
+    else:
+        usbStorageInUse = True
+        massStorageEnable()
+
+def massStorageEnable():
+    subprocess.call(["umount", "/mnt/usb-composite-virtualdisk"])
+    subprocess.call(["manage-usb-gadget-mass-storage", "--mount", "/var/local/retro-camera-pi/virtualdisk.bin"])
+    ledStorageToggle.off()
+
+def massStorageDisable():
+    subprocess.call(["manage-usb-gadget-mass-storage", "--unmount"])
+    subprocess.call(["mount", "/var/local/retro-camera-pi/virtualdisk.bin", "/mnt/usb-composite-virtualdisk"])
+    ledStorageToggle.on()
+
+# Mount virtualdisk in filesystem
+massStorageDisable()
+
+# Setup events
+buttonShutter.when_pressed = recordingStart
+buttonShutter.when_released = recordingEnd
+buttonFlashToggle.when_pressed = ledFlashIndicator.toggle
+buttonStorageToggle.when_pressed = massStorageToggle
+
+# Make main thread just wait
+pause()</code></pre>
+        <figcaption>retro-camera-pi</figcaption>
+    </figure>
+    <p>Så när användaren trycker på slutarknappen körs <code class="language-python">recordingStart()</code> som tänder blixten om denna är aktiverad och sedan börjar spela in video till den virtuella diskfilen. När man sedan släpper slutaren körs då <code class="language-python">recordingEnd()</code> som avslutar inspelningen, släcker blixten samt sammanlänkar videon med tidigare klipp till en kontinuerlig film.</p>
+    <p>För att kunna komma åt videon, trycker man på lagringsknappen som avmonterar den virtuella diskfilen och skickar den som argument till kernelmodulen <em><a href="https://www.kernel.org/doc/Documentation/usb/mass-storage.txt" target="_blank">g_mass_storage</a></em> som emulerar en usb lagringsenhet över USB-C porten. För indikation släcks den gröna lysdioden. När kameran är i lagringsläge går det inte att göra inspelningar. </p>
+    <figure>
+        <video loop muted autoplay>
+        <source src="http://clips.vorwaerts-gmbh.de/VfE_html5.webmö" type="video/webm">
+        <source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4ö" type="video/mp4">
+        </video>
+    </figure>
+    <p>För host-enheten dyker kameran upp som en vanlig lagringsenhet med den tidigare specifierade lagringskapaciteten. </p>
+
+    <p>När blixten är aktiverad lyser den gula lysdioden upp, men tänds bara när en videoinspelning sker.</p>
+    <figure>
+        <video loop muted autoplay>
+        <source src="http://clips.vorwaerts-gmbh.de/VfE_html5.webmö" type="video/webm">
+        <source src="http://clips.vorwaerts-gmbh.de/VfE_html5.mp4ö" type="video/mp4">
+        </video>
+    </figure>
+
+    <h3>Sätta på och stänga av</h3>
+    <p>För att sätta på kameran är det bara att dra skjutknappen och vänta på att den gröna lysdioden börjar lysa, då är kameran redo att användas.</p>
+    <p>När man ska stänga av kameran, trycker man in blixtknappen och därefter lagrigsknappen. Vänta tills de båda lysdioderna slocknat innan strömmen stängs av med skjutknappen. Den knapptryckningen initierar avstängning av linuxkerneln <mark>Annars är det risk att filsystemen kan bli korrupt.</mark> Detta då jag gjorde en designmiss och senare inte fick plats med någon form av soft-power krets.</p>
+    <p>Källkoden finns publikt på <a href="https://github.com/monkcs/retro-camera-pi" target="_blank">Github</a> att ladda ned eller forka, och är släppt under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">GNU GPLv3</a> licens.</p>
+
+    <h3>Länkar</h3>
+    <a href="https://gpiozero.readthedocs.io/en/stable/" target="_blank">Gpio Zero dokumentation</a><br>
+    <a href="https://gist.github.com/gbaman/50b6cca61dd1c3f88f41" target="_blank">Usb gadget mode setup</a>
+
+    <footer>
+        <address>
+            Kontakta mig på <a href="mailto:charlie.habolin@monkcs.se?subject=Bloggen">charlie.habolin@monkcs.se</a> om du har någon fråga!
+        </address>
+    </footer>
+</article>
