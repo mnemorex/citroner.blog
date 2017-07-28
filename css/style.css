@@ -373,14 +373,14 @@
     }
 
     figure img:not(:only-of-type) {
-        border-left-color: var(--font-color);
+       /* border-left-color: var(--font-color-gray);
         border-left-width: medium;
-        border-left-style: solid;
+        border-left-style: solid;*/
         display: block;
         max-height: 500px;
     }
 
-    figure:hover img:not(:only-of-type):not(:hover) {}
+figure:hover img:not(:only-of-type):not(:hover) {}
 
     figure code {
         display: block;
