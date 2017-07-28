@@ -25,10 +25,6 @@ window.onpopstate = function (event) {
 };
 
 function setupEvents() {
-    /* window.addEventListener('devicelight', function(event) {
-   alert('The current value of light is ' + event.value + ' lux');
-   });
-    */
 }
 
 function registerClickEvent() {
