@@ -1,8 +1,4 @@
-/* Main OnLoad function */
 window.onload = function () {
-    'use strict';
-    console.log("Javascript: DOM loaded");
-
     // Read hash on url and fetch article
     var hash = window.location.hash.substring(1);
     if (hash != "" && hash.startsWith("/post/")) {
@@ -10,13 +6,10 @@ window.onload = function () {
     } else {
         fetchArticle("/", true);
     }
-
-    // Setup event and services
-    setupEvents();
-    setupServiceWorker();
+    //setupServiceWorker();
 
     // Load side-panel
-    fetch("/post/index-articles.html").then(validate).then(insertArticleIndex).catch(riseError);
+    fetch("/post/index-articles.html").then(validateArticle).then(insertArticleIndex).catch(offlineMessage);
 };
 window.onpopstate = function (event) {
     if (event.state) {
@@ -24,14 +17,7 @@ window.onpopstate = function (event) {
     }
 };
 
-function setupEvents() {
-}
-
-function registerClickEvent() {
-    'use strict';
-    console.log("Javascript: setting up document events");
-
-    // Setup click event for all links in the document
+function setupLinkEvent() {
     var links = document.getElementsByTagName("a");
     for (var counter = 0; counter < links.length; ++counter) {
         links[counter].addEventListener("click", linkRelay);
@@ -55,7 +41,7 @@ function setupServiceWorker() {
         });
     }
 }
-// Check if link is heading for another article and if so, fade to that page insteat of jump
+
 function linkRelay(event) {
     if (event.target.pathname.startsWith("/post/")) {
         event.preventDefault();
@@ -65,31 +51,31 @@ function linkRelay(event) {
     }
 }
 
-function fetchArticle(hrefToArticle, boolReplaceState) {
-    if (hrefToArticle == "/" || hrefToArticle == "/feed.html" || hrefToArticle == "/index" || hrefToArticle == "/index.html" || hrefToArticle == "/index.htm") {
-        var pathState = {
+function fetchArticle(url, replaceUrl) {
+    if (url == "/" || url == "/feed.html" || url == "/index" || url == "/index.html" || url == "/index.htm") {
+        var path = {
             path: "/"
         };
-        if (boolReplaceState) {
-            history.replaceState(pathState, null, "/");
+        if (replaceUrl) {
+            history.replaceState(path, null, "/");
         } else {
-            history.pushState(pathState, null, "/");
+            history.pushState(path, null, "/");
         }
-        fetch("/feed.html").then(validate).then(insertArticle).catch(offlineMessage);
+        fetch("/feed.html").then(validateArticle).then(insertArticle).catch(offlineMessage);
     } else {
-        var pathState = {
-            path: hrefToArticle
+        var path = {
+            path: url
         };
-        if (boolReplaceState) {
-            history.replaceState(pathState, null, hrefToArticle);
+        if (replaceUrl) {
+            history.replaceState(path, null, url);
         } else {
-            history.pushState(pathState, null, hrefToArticle);
+            history.pushState(path, null, url);
         }
-        fetch(hrefToArticle).then(validate).then(insertArticle).catch(offlineMessage);
+        fetch(url).then(validateArticle).then(insertArticle).catch(offlineMessage);
     }
 }
 
-function validate(response) {
+function validateArticle(response) {
     if (response.ok) {
         return response.text();
     } else {
@@ -97,32 +83,24 @@ function validate(response) {
     }
 }
 
-function riseError(error) {
-    console.log('There has been a problem with a fetch operation: ' + error);
-    try {
-    document.getElementsByTagName("main")[0].classList.remove("hide");
-    } catch (errorCatch) { }
-
-}
-
 function offlineMessage() {
-    console.log('There has been a problem with a fetch operation');
     try {
-    document.getElementsByTagName("main")[0].classList.remove("hide");
-        } catch (errorCatch) { }
+        document.getElementsByTagName("main")[0].classList.remove("hide");
+    } catch (errorCatch) {}
 
-    fetch("/post/offline").then(validate).then(insertArticle);
+    fetch("/post/offline").then(validateArticle).then(insertArticle);
 }
 
-function insertArticle(rawHtmlText) {
-    var article = document.getElementsByTagName("article");
-    if (article.length > 0) {
-        article[0].remove();
+function insertArticle(rawHtml) {
+    var articles = document.getElementsByTagName("article");
+    for (var counter = 0; counter < articles.length; ++counter) {
+        articles[counter].remove();
     }
     var main = document.getElementsByTagName("main")[0];
-    main.insertAdjacentHTML('beforeend', rawHtmlText);
+    main.insertAdjacentHTML('beforeend', rawHtml);
     document.getElementsByTagName("main")[0].classList.remove("hide");
 
+    /*
     var shellStyleNone = document.querySelector('article[data-shellstyle="none"]');
     var shellStylePurge = document.querySelector('article[data-shellstyle="purge"]');
     if (shellStyleNone) {
@@ -140,8 +118,8 @@ function insertArticle(rawHtmlText) {
         }
         var body = document.getElementsByTagName("body")[0];
         body.innerHTML = "";
-        body.insertAdjacentHTML('beforeend', rawHtmlText);
-        registerClickEvent();
+        body.insertAdjacentHTML('beforeend', rawHtml);
+        setupLinkEvent();
         try{
         var entrypoint = document.getElementById("javascript-entrypoint");
         if(entrypoint != null) {
@@ -152,12 +130,12 @@ function insertArticle(rawHtmlText) {
             console.error("Error running eval");
             alert("Error: error parsing script")
         }
-    }
+    }*/
 }
 
-function insertArticleIndex(rawHtmlText) {
-    var articleIndex = document.getElementById("article-index");
-    articleIndex.innerHTML = "";
-    articleIndex.insertAdjacentHTML('beforeend', rawHtmlText);
-    registerClickEvent();
+function insertArticleIndex(rawHtml) {
+    var index = document.getElementById("article-index");
+    index.innerHTML = "";
+    index.insertAdjacentHTML('beforeend', rawHtml);
+    setupLinkEvent();
 }
