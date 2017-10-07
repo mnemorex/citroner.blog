@@ -190,11 +190,16 @@
         transition: opacity 1s ease;
     }
     
-    main>mark {
+    main>mark,
+    mark.alert {
         display: block;
         padding: 1.2rem 2rem;
     }
     
+    mark.alert {
+        margin: 0 -2rem;
+    }
+
     article h2::before {
         counter-increment: section;
         content: "#" counter(section) " - ";
