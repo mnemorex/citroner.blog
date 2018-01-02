@@ -546,10 +546,6 @@
             margin-left: 0;
             margin-right: 0;
         }
-        article {
-            padding: 0 calc(1.7 * var(--margin-article));
-        }
-
         mark.alert {
             margin: 0 calc(0rem - calc(1.7 * var(--margin-article)) - var(--margin-article));
         }
@@ -567,7 +563,7 @@
         }
         #navigation-toggle:checked ~ aside ~ main {
             transform: translateX(0%);
-            /*filter: opacity(0.4);*/
+            filter: opacity(0.4);
             pointer-events: none;
         }
         #navigation-toggle:checked ~ aside ~ main label.navigation-toggle {
@@ -582,9 +578,6 @@
         html {
             font-size: calc(var(--font-size) - 2px);
         }
-        article {
-            padding: 0 var(--margin-article);
-        }
         figure,
         blockquote {
             margin-left: -1rem;
@@ -592,16 +585,13 @@
         }
         article,
         main > mark {
-            margin-left: rem;
+            margin-left: 1rem;
             margin-right: 1rem;
         }
+        body > header > h1 span {
+            display: none;
+        }
     }
-
-    #print-message {
-        display: none;
-    }
-
-
 
     #print-message {
         display: none;
