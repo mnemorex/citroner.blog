@@ -1,30 +1,32 @@
 window.onload = function () {
     // Read hash on url and fetch article
+    shellstyle(true, true);
     var hash = window.location.hash.substring(1);
     if (hash != "" && hash.startsWith("/post/")) {
         fetchArticle(hash + window.location.search, true);
     } else {
         fetchArticle("/", true);
     }
-    //setupServiceWorker();
+    //registerServiceworker();
 
     // Load side-panel
-    fetch("/post/index-articles.html").then(validateArticle).then(insertArticleIndex).catch(offlineMessage);
+    fetch("/post/index-articles.html").then(validate).then(insertIndex).catch(offline);
 };
 window.onpopstate = function (event) {
     if (event.state) {
+        shellstyle(true, true);
         fetchArticle(event.state.path, true);
     }
 };
 
-function setupLinkEvent() {
+function registerEvents() {
     var links = document.getElementsByTagName("a");
     for (var counter = 0; counter < links.length; ++counter) {
-        links[counter].addEventListener("click", linkRelay);
+        links[counter].addEventListener("click", relay);
     }
 }
 
-function setupServiceWorker() {
+function registerServiceworker() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/serviceworker.js').then(function (registration) {
             if (registration.installing) {
@@ -36,106 +38,120 @@ function setupServiceWorker() {
             }
             console.log('ServiceWorker scope: ', registration.scope);
         }).catch(function (error) {
-            // Serviceworker registration failed
             console.error('ServiceWorker registration failed: ', error);
         });
     }
 }
 
-function linkRelay(event) {
-    if (event.target.pathname.startsWith("/post/")) {
+function relay(event) {
+    if (event.target.pathname.startsWith("/post/") || event.target.pathname.startsWith("/authors/")) {
         event.preventDefault();
-        document.getElementsByTagName("main")[0].classList.add("hide");
         document.getElementById("navigation-toggle").checked = false;
         fetchArticle(event.target.href, false);
     }
 }
 
-function fetchArticle(url, replaceUrl) {
+// Fetch a article from provided url, bool to replace or push a history state
+function fetchArticle(url, replace) {
     if (url == "/" || url == "/feed.html" || url == "/index" || url == "/index.html" || url == "/index.htm") {
         var path = {
             path: "/"
         };
-        if (replaceUrl) {
+        if (replace) {
             history.replaceState(path, null, "/");
         } else {
             history.pushState(path, null, "/");
         }
-        fetch("/feed.html").then(validateArticle).then(insertArticle).catch(offlineMessage);
+        fetch("/feed.html").then(validate).then(insertArticle).catch(offline);
     } else {
         var path = {
             path: url
         };
-        if (replaceUrl) {
+        if (replace) {
             history.replaceState(path, null, url);
         } else {
             history.pushState(path, null, url);
         }
-        fetch(url).then(validateArticle).then(insertArticle).catch(offlineMessage);
+        fetch(url).then(validate).then(insertArticle);
     }
 }
 
-function validateArticle(response) {
+function validate(response) {
     if (response.ok) {
         return response.text();
     } else {
-        throw new Error('Network response was not ok.');
+        throw new Error('Network response was not valid');
     }
 }
 
-function offlineMessage() {
-    try {
-        document.getElementsByTagName("main")[0].classList.remove("hide");
-    } catch (errorCatch) {}
-
-    fetch("/post/offline").then(validateArticle).then(insertArticle);
+function offline() {
+    fetch("/post/offline").then(validate).then(insertArticle);
 }
 
-function insertArticle(rawHtml) {
+function insertArticle(html) {
     var articles = document.getElementsByTagName("article");
     for (var counter = 0; counter < articles.length; ++counter) {
         articles[counter].remove();
     }
-    var main = document.getElementsByTagName("main")[0];
-    main.insertAdjacentHTML('beforeend', rawHtml);
-    document.getElementsByTagName("main")[0].classList.remove("hide");
 
-    /*
-    var shellStyleNone = document.querySelector('article[data-shellstyle="none"]');
-    var shellStylePurge = document.querySelector('article[data-shellstyle="purge"]');
-    if (shellStyleNone) {
-        // Hide the website shell, but keep stylesheet
-        var mainStylesheet = document.getElementsByClassName("main-stylesheet");
-        for (var counter = 0; counter < mainStylesheet.length; ++counter) {
-            mainStylesheet[counter].remove();
-        }
+    if (html.includes('data-shellstyle="hide"')) {
+        shellstyle(true, false);
     }
-    if (shellStylePurge) {
-        // Hide the website shell, and don't keep main stylesheet
-        var mainStylesheet = document.getElementsByClassName("main-stylesheet");
-        for (var counter = 0; counter < mainStylesheet.length; ++counter) {
-            mainStylesheet[counter].remove();
-        }
+    if (html.includes('data-shellstyle="purge"')) {
+        shellstyle(false, false);
+    }
+    try {
+        var main = document.getElementsByTagName("main")[0];
+        main.insertAdjacentHTML("beforeend", html);
+    } catch (message) {
+        console.error("Not possible to get refrence of 'main' node, inserting into 'body' instead");
         var body = document.getElementsByTagName("body")[0];
-        body.innerHTML = "";
-        body.insertAdjacentHTML('beforeend', rawHtml);
-        setupLinkEvent();
-        try{
+        body.insertAdjacentHTML("beforeend", html);
+    }
+    registerEvents();
+
+    try {
         var entrypoint = document.getElementById("javascript-entrypoint");
-        if(entrypoint != null) {
+        if (entrypoint != null) {
             eval(entrypoint.innerHTML);
         }
+    } catch (error) {
+        console.error("Running eval on element 'javascript-entrypoint' failed");
+        console.error(error);
+    }
+
+}
+var bodystorage = null;
+
+function shellstyle(shell, style) {
+    // Enable or disable the shell by moving it to and from a template node
+    if (!shell) {
+        var body = document.getElementsByTagName("body")[0];
+        bodystorage = body.cloneNode(true);
+        while (body.firstChild) {
+            body.removeChild(body.firstChild);
         }
-        catch (errorCatch) {
-            console.error("Error running eval");
-            alert("Error: error parsing script")
+    } else {
+        if (bodystorage != null) {
+            var body = document.getElementsByTagName("body")[0];
+            body.replaceWith(bodystorage);
+            bodystorage = null;
         }
-    }*/
+    }
+    // Enable or disable main stylesheets
+    var stylesheets = document.getElementsByClassName("main-stylesheet");
+    for (var counter = 0; counter < stylesheets.length; ++counter) {
+        stylesheets[counter].sheet.disabled = !style;
+    }
 }
 
-function insertArticleIndex(rawHtml) {
-    var index = document.getElementById("article-index");
-    index.innerHTML = "";
-    index.insertAdjacentHTML('beforeend', rawHtml);
-    setupLinkEvent();
+function insertIndex(html) {
+    try {
+        var index = document.getElementById("article-index");
+        while (index.firstChild) {
+            index.removeChild(index.firstChild);
+        }
+        index.insertAdjacentHTML('beforeend', html);
+    } catch (message) {}
+    registerEvents();
 }

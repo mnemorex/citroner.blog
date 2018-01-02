@@ -6,21 +6,22 @@
     <!-- Web manifest values -->
     <link rel="manifest" href="manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <!-- Javascript -->
+    <script defer src="javascript/sitescript.js"></script>
+    <script>
+        const language = navigator.language;
+        var tag = document.getElementsByTagName('html');
+        if (language.includes("en") | language.includes("sv")) {
+            tag[0].setAttribute('lang', language);
+        } else {
+            tag[0].setAttribute('lang', 'en');
+        }
+    </script>
     <!-- Stylesheet -->
     <link rel="stylesheet" type="text/css" class="main-stylesheet" href="css/style.css" />
     <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/font-noto-sans/font-noto-sans.css" />
     <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/font-blogger-sans/font-blogger-sans.css" />
     <link rel="stylesheet" type="text/css" class="main-stylesheet" media="print" href="css/media-print.css" />
-    <!-- Javascript -->
-    <script async src="javascript/sitescript.js"></script>
-    <script>
-        const userLanguage = navigator.language;
-        if (userLanguage.includes("en") | userLanguage.includes("sv")) {
-            document.getElementsByTagName('html')[0].setAttribute('lang', userLanguage);
-        } else {
-            document.getElementsByTagName('html')[0].setAttribute('lang', 'en');
-        }
-    </script>
     <!-- Publisher Information -->
     <meta name="author" content="Charlie Habolin" />
     <meta name="publisher" content="Charlie Habolin" />
@@ -30,22 +31,22 @@
 
 <body>
     <header>
-        <h1>Citroner bloggen</h1>
+        <img src="/graphics/icons/citroner.svg" ><h1>Citroner bloggen</h1>
     </header>
     <div class="flex-container">
         <input type="checkbox" id="navigation-toggle">
         <aside>
-            <label class="navigation-toggle" for="navigation-toggle">&rarr;</label>
+            <label class="navigation-toggle" for="navigation-toggle">🞩</label>
             <nav>
                 <ul>
                     <li><span lang="en">Articles</span> <span lang="sv">Artiklar</span>
-                        <ul id="article-index"> </ul>
+                        <ul id="article-index"></ul>
                     </li>
                 </ul>
             </nav>
         </aside>
         <main>
-            <label class="navigation-toggle" for="navigation-toggle">Menu</label>
+            <label class="navigation-toggle" for="navigation-toggle">&#9776;</label>
             <mark lang="en" data-lang-localized="true"><strong>This article is written in Swedish and it seems that it is not your native language. You are welcome to use translation services like Google Translate 😊</strong></mark>
         </main>
     </div>

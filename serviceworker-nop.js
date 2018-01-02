@@ -7,7 +7,6 @@ self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
-/*
 self.addEventListener('activate', () => {
   // Optional: Get a list of all the current open windows/tabs under
   // our service worker's control, and force them to reload.
@@ -19,4 +18,3 @@ self.addEventListener('activate', () => {
     });
   });
 });
-*/

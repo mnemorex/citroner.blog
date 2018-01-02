@@ -1,39 +1,34 @@
-var cacheIdentifier = 'citroner-version-5';
-var appShell = [
+var identifier = 'citroner-version-5';
+var files = [
     '/'
     , '/index.html'
     , '/css/style.css'
-    , '/css/normalize.css'
-    , '/css/media-print.css'
     , '/javascript/sitescript.js'
-    , '/javascript/tools.js'
     , '/javascript/shellcheck.js'
     , '/javascript/shellredirect.js'
-    , '/graphics/authors/charlie-habolin.jpg'
+    , '/graphics/authors/glitch.jpg'
     , '/post/offline'
     , '/post/offline/'
     , '/post/index-articles.html'
     , '/manifest.json'
 ];
 self.addEventListener('install', function (event) {
-    // Perform install steps
-    event.waitUntil(caches.open(cacheIdentifier).then(function (cache) {
-        console.log('Opened cache');
-        return cache.addAll(appShell);
+    event.waitUntil(caches.open(identifier).then(function (cache) {
+        return cache.addAll(files);
     }));
 });
 this.addEventListener('activate', function (event) {
-    var cacheWhitelist = [cacheIdentifier];
+    var whitelist = [identifier];
     event.waitUntil(caches.keys().then(function (keyList) {
         return Promise.all(keyList.map(function (key) {
-            if (cacheWhitelist.indexOf(key) === -1) {
+            if (whitelist.indexOf(key) === -1) {
                 return caches.delete(key);
             }
         }));
     }));
 });
 self.addEventListener('fetch', function (event) {
-    event.respondWith(caches.open(cacheIdentifier).then(function (cache) {
+    event.respondWith(caches.open(identifier).then(function (cache) {
         return cache.match(event.request).then(function (response) {
             var fetchPromise = fetch(event.request).then(function (networkResponse) {
                 if (!event.request.url.includes("--no-caching")) {
@@ -46,9 +41,9 @@ self.addEventListener('fetch', function (event) {
     }));
 });
 
-function logError(errorCallback) {
+function logError(message) {
     console.warn("Fetch: failed fetching data, ok if offline");
-    console.warn(errorCallback);
+    console.warn(message);
 }
 /*
 self.addEventListener('fetch', function (event) {
@@ -72,7 +67,7 @@ self.addEventListener('fetch', function (event) {
             // as well as the cache consuming the response, we need
             // to clone it so we have two streams.
             var responseToCache = response.clone();
-            caches.open(cacheIdentifier).then(function (cache) {
+            caches.open(identifier).then(function (cache) {
                 cache.put(event.request, responseToCache);
             });
             return response;
@@ -82,7 +77,7 @@ self.addEventListener('fetch', function (event) {
 });
 
 function update(request) {
-    return caches.open(cacheIdentifier).then(function (cache) {
+    return caches.open(identifier).then(function (cache) {
         return fetch(request).then(function (response) {
             // Check if we received a valid response
             if (!response || response.status !== 200 || response.type !== 'basic') {

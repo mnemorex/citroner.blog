@@ -11,9 +11,9 @@
         --font-color-gray: #3d3d3d;
         --font-size: 18px;
         --font-size-h1: 2.4rem;
-        --font-size-h2: 1.75rem;
-        --font-size-h3: 1.27rem;
-        --font-size-h4: 1.12rem;
+        --font-size-h2: 2.0rem;
+        --font-size-h3: 1.47rem;
+        --font-size-h4: 1.22rem;
         --font-size-h5: .83rem;
         --font-size-site-header: 3.5rem;
         --font-header: 'Blogger Sans', sans-serif;
@@ -38,10 +38,22 @@
         box-shadow: inset 0 0 0 100rem #ffe97c;
         height: 6rem;
         color: white;
-        text-shadow: 3px 3px #000;
         overflow: hidden;
         display: flex;
         justify-content: center;
+    }
+
+    body > header > * {
+        width: auto;
+        height: inherit;
+        margin-left: 1rem;
+        filter: drop-shadow(3px 3px rgba(68, 68, 68, 0.87)) drop-shadow(0px 0px 40px rgba(255,255,255, 0.87));
+    }
+
+    body > header > h1 {
+        font-size: var(--font-size-site-header);
+        text-transform: uppercase;
+        margin-top: 0.24em;
     }
 
     h1,
@@ -51,6 +63,7 @@
     h5,
     h6 {
         font-family: var(--font-header);
+        font-weight: normal;
     }
 
     h1 {
@@ -60,10 +73,14 @@
 
     h2 {
         font-size: var(--font-size-h2);
+        margin-top: 3rem;
+        margin-bottom: 0;
     }
 
     h3 {
         font-size: var(--font-size-h3);
+        margin-top: 2rem;
+        margin-bottom: 0;
     }
 
     h4 {
@@ -76,11 +93,6 @@
 
     h6 {
         font-size: var(--font-size-h6);
-    }
-
-    body > header > h1 {
-        font-size: var(--font-size-site-header);
-        margin-top: 0;
     }
 
     .hide {
@@ -96,6 +108,7 @@
         padding-top: 1rem;
         align-items: stretch;
         position: relative;
+
     }
 
     #navigation-toggle {
@@ -105,25 +118,20 @@
     label.navigation-toggle {
         cursor: pointer;
         height: 3.1rem;
-        margin-left: 2rem;
-        margin-right: 2rem;
-        box-shadow: inset 0 0 0 100rem #ffde7c;
-        border: none;
+        margin-left: 1rem;
+        margin-top: -1.2em;
+        background: #ffd37c;
         border-radius: 3em;
         padding: 0 0.5em;
-        font-size: 1.6em;
+        font-size: 1.7rem;
         color: #333;
         font-family: var(--font-header);
         text-align: center;
         line-height: 3.2rem;
         transform: translateY(0%);
-        position:fixed;
+        position: fixed;
         display: none;
         text-transform: uppercase;
-    }
-
-    label.navigation-toggle:hover {
-        box-shadow: inset 0 0 0 100rem #ffd37c;
     }
 
     nav {}
@@ -170,6 +178,20 @@
         min-width: 13rem;
         height: auto;
         box-shadow: var(--main-shadow);
+    }
+
+    @keyframes slidein {
+        0% {
+            transform: translateY(0%);
+        }
+        50% {
+            transform: translateY(calc(2 * 100vh));
+        }
+        100% {
+            transform: translateY(calc(2 * 100vh));
+            min-width: 0;
+            width: 0;
+        }
     }
 
     article {
@@ -502,7 +524,7 @@
         }
         body > header > h1 {
             font-size: calc(var(--font-size-site-header) - 0.5rem);
-            margin-top: 0.5rem;
+            margin-top: 0.95rem;
         }
         .flex-container {
             justify-content: flex-start;
@@ -545,7 +567,7 @@
         }
         #navigation-toggle:checked ~ aside ~ main {
             transform: translateX(0%);
-            filter: opacity(0.4);
+            /*filter: opacity(0.4);*/
             pointer-events: none;
         }
         #navigation-toggle:checked ~ aside ~ main label.navigation-toggle {
@@ -563,13 +585,13 @@
         article {
             padding: 0 var(--margin-article);
         }
-                figure,
+        figure,
         blockquote {
             margin-left: -1rem;
             margin-right: -1rem;
         }
-                article,
-        main>mark {
+        article,
+        main > mark {
             margin-left: rem;
             margin-right: 1rem;
         }
