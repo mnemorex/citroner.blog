@@ -85,7 +85,7 @@ function validate(response) {
 }
 
 function offline() {
-    fetch("/post/offline").then(validate).then(insertArticle);
+    fetch("/post/offline/").then(validate).then(insertArticle);
 }
 
 function insertArticle(html) {

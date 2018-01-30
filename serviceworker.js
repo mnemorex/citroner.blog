@@ -1,13 +1,11 @@
-var identifier = 'citroner-version-5';
+var identifier = 'citroner-version-6';
 var files = [
-    '/'
+      '/'
     , '/index.html'
     , '/css/style.css'
     , '/javascript/sitescript.js'
     , '/javascript/shellcheck.js'
     , '/javascript/shellredirect.js'
-    , '/graphics/authors/glitch.jpg'
-    , '/post/offline'
     , '/post/offline/'
     , '/post/index-articles.html'
     , '/manifest.json'

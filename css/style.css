@@ -35,7 +35,7 @@
     }
 
     body > header {
-        box-shadow: inset 0 0 0 100rem #ffe97c;
+        background-color: #ffe97c;
         height: 6rem;
         color: white;
         overflow: hidden;
@@ -228,7 +228,7 @@
         outline-style: none;
     }
 
-    article header img {
+    article > header > img {
         border-radius: 50%;
         float: left;
         width: auto;
@@ -237,7 +237,7 @@
         cursor: pointer;
     }
 
-    article header img:hover {
+    article > header > img:hover {
         height: 6rem;
         margin-right: 1.4rem;
     }
@@ -461,13 +461,14 @@
         width: 70%;
         display: block;
     }
-
+    html:lang(en) header h1:not(:lang(en)),
     html:lang(en) aside *:not(:lang(en)),
     html:lang(en) article h1:not(:lang(en)),
     html:lang(en) *:not(:lang(en))[data-lang-localized="true"] {
         display: none;
     }
 
+    html:lang(sv) header h1:not(:lang(sv)),
     html:lang(sv) aside *:not(:lang(sv)),
     html:lang(sv) article h1:not(:lang(sv)),
     html:lang(sv) *:not(:lang(sv))[data-lang-localized="true"] {
@@ -595,4 +596,7 @@
 
     #print-message {
         display: none;
+    }
+    .no-script::before {
+      content: "No Javascript is activated, so this page may behave a bit funky...";
     }
