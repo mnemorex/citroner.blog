@@ -5,16 +5,16 @@
         <h1 lang="en">Retro Camera Pi - A handheld videocamera</h1>
         <img src="/graphics/authors/charlie-habolin.jpg"> <span>Charlie Habolin</span>
         <br/>
-        <time datetime="2017-07-17T15:00+01:00">17 juli 2017. 15:00</time><time
+        <time datetime="2017-07-17T15:00+01:00">17 juli 2017. 15:00</time>
     </header>
     <p>Jag blev intresserad när den uppdaterade modellen av Raspberry Pi Zero med kameraanslutning släpptes, att bygga någon form av egen kamera. Med zeron's lilla storlek kan man 3d-skriva en form till att innehålla en Raspberry Pi, kamera, batteri och laddningskrets. Kameran har ett utseende liknande en systemkamera, men fungerar tekniskt som en gammal videokamera där varje inspelat klipp sammanfogas till en lång kontinuerlig film.</p>
 
     <figure>
-        <img src="graphics/camera-front.jpg" tabindex="0" alt="Framsidan av kameran" />
+        <img src="graphics/camera-front.jpg" alt="Framsidan av kameran" />
         <figcaption>Framsidan av kameran med "objektivet" som döljer en Raspberry Pi kamera modul</figcaption>
     </figure>
     <figure>
-        <img src="graphics/camera-back.jpg" tabindex="0" alt="Baksidan av kameran" />
+        <img src="graphics/camera-back.jpg" alt="Baksidan av kameran" />
         <figcaption>Baksidan med strömreglage samt usb lagrings- och blixtknapp</figcaption>
     </figure>
     <figure>
@@ -27,18 +27,18 @@
     <h2>Det fysiska</h2>
     Kameran är 3d modellerad och utskriven i PLA-filament på en <a href="https://printm3d.com/themicro/" target="_blank">M3D Micro</a> skrivare.
     <figure>
-        <img src="graphics/all-parts.jpg" tabindex="0" alt="Alla delar som behövdes för bygget" />
+        <img src="graphics/all-parts.jpg" alt="Alla delar som behövdes för bygget" />
         <figcaption>Alla delar som behövdes för att bygga kameran</figcaption>
     </figure>
     <figure>
         <div class="scrollview">
-            <img src="graphics/camera-open-front.jpg" tabindex="0" alt="Kameran öppnad" />
-            <img src="graphics/camera-back-open.jpg" tabindex="0" alt="Kameran öppnad" />
+            <img src="graphics/camera-open-front.jpg" alt="Kameran öppnad" />
+            <img src="graphics/camera-back-open.jpg" alt="Kameran öppnad" />
         </div>
         <figcaption>Här är kameran halvt byggd</figcaption>
     </figure>
     <h2>Mjukvara</h2>
-    <p>Mjukvaran består av ett <a href="https://www.python.org/" target="_blank">Pythonskript</a> som sköter inspelning samt några bashskript för hantering av några systemfunktioner. Python skriptet körs om det är installerat som en deamon vid upstart. Jag använder mig av <a href="https://github.com/RPi-Distro/python-gpiozero">gpiozero</a> för att interagera med gpio-pins på Raspberry Pi zero</p>
+    <p>Mjukvaran består av ett <a href="https://www.python.org/" target="_blank">Pythonskript</a> som sköter inspelning samt några bashskript för hantering av några systemfunktioner. Python skriptet körs om det är installerat som en deamon vid upstart. Jag använder mig av <a href="https://github.com/RPi-Distro/python-gpiozero" target="_blank">gpiozero</a> för att interagera med gpio-pins på Raspberry Pi zero</p>
     <figure>
         <pre><code data-language="python">#!/usr/bin/env python3
 
@@ -156,13 +156,13 @@ pause()</code></pre>
     <p>Så när användaren trycker på slutarknappen körs <code class="language-python">recordingStart()</code> som tänder blixten om denna är aktiverad och sedan börjar spela in video till den virtuella diskfilen. När man sedan släpper slutaren körs då <code class="language-python">recordingEnd()</code> som avslutar inspelningen, släcker blixten samt sammanlänkar videon med tidigare klipp till en kontinuerlig film.</p>
     <p>För att kunna komma åt videon, trycker man på lagringsknappen som avmonterar den virtuella diskfilen och skickar den som argument till kernelmodulen <em><a href="https://www.kernel.org/doc/Documentation/usb/mass-storage.txt" target="_blank">g_mass_storage</a></em> som emulerar en usb lagringsenhet över USB-C porten. För indikation släcks den gröna lysdioden. När kameran är i lagringsläge går det inte att göra inspelningar. </p>
     <figure>
-        <img src="graphics/camera-usb-mode.jpg" tabindex="0" alt="Kameran i usb-läge">
+        <img src="graphics/camera-usb-mode.jpg" alt="Kameran i usb-läge">
     </figure>
     <p>För host-enheten dyker kameran upp som en vanlig lagringsenhet med den tidigare specifierade lagringskapaciteten. </p>
 
     <p>När blixten är aktiverad lyser den gula lysdioden upp, men tänds bara när en videoinspelning sker.</p>
     <figure>
-        <img src="graphics/camera-flash-activated.jpg" tabindex="0" alt="Kameran med blixt aktiverad">
+        <img src="graphics/camera-flash-activated.jpg" alt="Kameran med blixt aktiverad">
     </figure>
 
     <h3>Sätta på och stänga av</h3>
