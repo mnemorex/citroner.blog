@@ -341,7 +341,7 @@
     }
 
     abbr {
-        border-bottom: 1px dotted var(--font-color);
+        text-decoration: underline dotted var(--font-color);
         cursor: help;
     }
 

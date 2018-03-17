@@ -1,0 +1,77 @@
+<article data-author-id="monkcs" lang="sv">
+    <script src="/javascript/shellcheck.js"></script><noscript><meta charset="UTF-8"><link rel="stylesheet" type="text/css" href="/css/style.css" /></noscript>
+    <header>
+        <h1 lang="sv">Programmera ATtiny med Arduino Uno sheild</h1>
+        <h1 lang="en">Title of post</h1>
+        <img src="/graphics/authors/charlie-habolin.jpg"> <span>Charlie Habolin</span>
+        <br/>
+        <time datetime="2018-03-17T10:00+01:00">17 mars 2018. 10:00</time>
+    </header>
+    <p>Med de små mikrokontrollerna ATTiny25/45/85 från <a href="https://www.atmel.com" target="_blank">Atmel</a> kan man billigare och enkelt bygga arduinoprojekt utan de extra komponenterna som inte behövs från utvecklingskorten. Detta är perfekt för projekt med låg strömförbrukning och liten formfaktor, till exempel vid batteridrift.</p>
+    <p>Då mikrokontrollern inte har något USB-gränssnitt behöver programmering ske från en annan enhet, där en <a href="https://store.arduino.cc/arduino-uno-rev3" target="_blank">Arduino Uno</a> kan användas, konfigurerad som <abbr title="In System Programmer">ISP</abbr>. I detta projekt bygger jag en mer permanent lösning än jumpers på ett breadboard: en Arduino Uno sheild som håller en 8-pin IC-hållare för att enkelt kunna programmera ATtiny chip i <abbr title="Dual In-line Package">DIP paket</abbr>.</p>
+
+    <!-- INSERT PART LIST -->
+
+    <p>Arduino har en artikel <a href="https://www.arduino.cc/en/Tutorial/ArduinoISP" target="_blank">Arduino as ISP and Arduino Bootloaders</a>, där det ingående beskrivs hur de olika utvecklingskorten ansluts för att kunna programmera en sekundär mikrokontroller. En fördel också är att det med denna metod går att programmera ett chip <em>utan</em> en bootloader, för att bland annat kunna använda hela programminnet. För att använda Arduino Uno som en programmerare används följande uppsättning:</p>
+    <figure>
+        <table>
+            <thead>
+                <tr>
+                    <th>Databuss</th>
+                    <th>Arduino Uno pin</th>
+                </tr>
+            </thead>
+            <tr>
+                <td><abbr title="Serial Clock (från master)">SCLK</abbr></td>
+                <td>13 eller ICSP-3</td>
+            </tr>
+            <tr>
+                <td><abbr title="Master Input Slave Output">MISO</abbr></td>
+                <td>12 eller ICSP-1</td>
+            </tr>
+            <tr>
+                <td><abbr title="Master Output Slave Input">MOSI</abbr></td>
+                <td>11 eller ICSO-4</td>
+            </tr>
+            <tr>
+                <td>RESET</td>
+                <td>10 eller ICSP-5</td>
+            </tr>
+        </table>
+    </figure>
+    <figure>
+        <img src="graphics/attiny-programming.svg" alt="Schema över fysiska anslutningar på mikrokontrollern" />
+        <figcaption>Anslutning för SPI på Attiny <a href="http://www.pighixxx.com/" target="_blank">Grafik: PighiXXX</a></figcaption>
+    </figure>
+    <figure>
+        <img src="graphics/arduino-uno-perf-sheild.png" alt="Prototypsheild för anslutning till Arduino Uno" />
+    </figure>
+    <p>Den prototypsheild som jag använder har en perfboard med lödöar, samt några banor för 5V och jord. Detta kort har ingen ICSP kontaktgrupp, så jag löder till de numrerade pin.</p>
+    <!-- BILD -->
+    <p>Med ett enkelt testprogram kan vi testa att mikrokontrollern faktiskt har programmerats.</p>
+    <figure>
+        <pre><code data-language="c">void setup() {
+  pinMode(0, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(0, true);
+  delay(500);
+  digitalWrite(1, false);
+  delay(1000);
+}</code></pre>
+        <figcaption>blink.ino</figcaption>
+    </figure>
+    <figure>
+        <video loop muted autoplay playsinline>
+            <source src="" type="video/mp4">
+        </video>
+        <figcaption>Attiny85 kör testprogram</figcaption>
+    </figure>
+
+    <footer>
+        <address>
+            Kontakta mig på <a href="mailto:charlie.habolin@monkcs.se?subject=citroner.blog - ">charlie.habolin@monkcs.se</a> om du har någon fråga!
+        </address>
+    </footer>
+</article>
