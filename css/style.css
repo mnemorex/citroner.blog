@@ -302,7 +302,10 @@
         width: 100%;
     }
 
-    p:target {
+p {
+    text-align: justify;
+}
+p:target {
         border-right-style: solid;
         border-right-color: var(--link-color);
     }
