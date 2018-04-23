@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="shelldocument" content="true" />
+
+    <!-- Preload -->
+    <link rel="preload" type="text/css" as="style" href="css/style.css" />
+    <link rel="preload" type="text/html" as="document" href="post/index-articles.html" />
+    <link rel="preload" type="text/html" as="document" href="feed.html" />
+    <link rel="preload" as="script" href="javascript/sitescript.js" />
     <!-- Javascript -->
     <script defer src="javascript/sitescript.js"></script>
     <script>
@@ -13,12 +20,13 @@
         } else {
             tag[0].setAttribute('lang', 'en');
         }
+
     </script>
     <!-- Stylesheet -->
-    <link rel="stylesheet" type="text/css" class="main-stylesheet" href="css/style.css" />
     <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/font-noto-sans/font-noto-sans.css" />
     <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/font-blogger-sans/font-blogger-sans.css" />
-    <link rel="stylesheet" type="text/css" class="main-stylesheet" href="css/media-print.css" media="print" />
+    <link rel="stylesheet" type="text/css" class="main-stylesheet" href="css/style.css" />
+    <!-- <link rel="stylesheet" type="text/css" class="main-stylesheet" href="css/media-print.css" media="print" /> -->
     <!-- Publisher Information -->
     <meta name="author" content="Charlie Habolin" />
     <meta name="publisher" content="Charlie Habolin" />
@@ -27,12 +35,14 @@
     <title>Citroner bloggen</title>
     <link rel="manifest" href="manifest.json">
     <meta name="viewport" id="viewport" content="width=user-scalable=no,device-width,minimum-scale=1,maximum-scale=1,initial-scale=1" />
-    <link rel="icon" type="image/png" href="graphics/icons/citroner-500x500.png" sizes="500x500">
+    <link rel="icon" type="image/png" href="graphics/icons/citroner-250x250.png" sizes="500x500">
 </head>
 
 <body>
     <header>
-        <img src="/graphics/icons/citroner.svg" ><h1 lang="en">The Citroner<span> Blog</span></h1><h1 lang="sv">Citroner<span> Bloggen</span></h1>
+        <img src="/graphics/icons/citroner.svg">
+        <h1 lang="en">The Citroner<span> Blog</span></h1>
+        <h1 lang="sv">Citroner<span> Bloggen</span></h1>
     </header>
     <div class="flex-container">
         <input type="checkbox" id="navigation-toggle">
@@ -52,4 +62,5 @@
         </main>
     </div>
 </body>
+
 </html>

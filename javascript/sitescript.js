@@ -12,6 +12,7 @@ window.onload = function () {
     // Load side-panel
     fetch("/post/index-articles.html").then(validate).then(insertIndex);
 };
+
 window.onpopstate = function (event) {
     if (event.state) {
         shellstyle(true, true);
@@ -53,7 +54,7 @@ function relay(event) {
 
 // Fetch a article from provided url, bool to replace or push a history state
 function fetchArticle(url, replace) {
-    if (url == "/" || url == "/feed.html" || url == "/index" || url == "/index.html" || url == "/index.htm") {
+    if (url == "/" || url == "/index" || url == "/index.html" || url == "/index.htm") {
         var path = {
             path: "/"
         };
@@ -62,7 +63,7 @@ function fetchArticle(url, replace) {
         } else {
             history.pushState(path, null, "/");
         }
-        fetch("/feed.html").then(validate).then(insertArticle).catch(offline);
+        fetch("/post/feed").then(validate).then(insertArticle).catch(offline);
     } else {
         var path = {
             path: url
@@ -141,7 +142,7 @@ function shellstyle(shell, style) {
     // Enable or disable main stylesheets
     var stylesheets = document.getElementsByClassName("main-stylesheet");
     for (var counter = 0; counter < stylesheets.length; ++counter) {
-        stylesheets[counter].sheet.disabled = !style;
+        stylesheets[counter].disabled = !style;
     }
 }
 
