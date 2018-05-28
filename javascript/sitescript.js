@@ -7,7 +7,7 @@ window.onload = function () {
     } else {
         fetchArticle("/", true);
     }
-    //registerServiceworker();
+    registerServiceworker();
 
     // Load side-panel
     fetch("/post/index-articles.html").then(validate).then(insertIndex);
