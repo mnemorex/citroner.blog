@@ -1,16 +1,13 @@
 window.onload = function () {
-    // Read hash on url and fetch article
+    // Make sure the shell is present if it was previously disabled
     shellstyle(true, true);
-    var hash = window.location.hash.substring(1);
-    if (hash != "" && hash.startsWith("/post/")) {
-        fetchArticle(hash + window.location.search, true);
-    } else {
-        fetchArticle("/", true);
-    }
+    // Read the hash on the end of the url and fetch that article
+    fetchArticle(window.location.hash.substring(1) + window.location.search, true);
+
     registerServiceworker();
 
     // Load side-panel
-    fetch("/post/index-articles.html").then(validate).then(insertIndex);
+    fetch("/post/register--refresh.html").then(validate).then(insertRegister);
 };
 
 window.onpopstate = function (event) {
@@ -29,42 +26,54 @@ function registerEvents() {
 
 function registerServiceworker() {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/serviceworker.js').then(function (registration) {
-            if (registration.installing) {
-                console.info('Service worker installing');
-            } else if (registration.waiting) {
-                console.info('Service worker installed, waiting for handover by old service worker');
-            } else if (registration.active) {
-                console.info('Service worker active');
-            }
-            console.log('ServiceWorker scope: ', registration.scope);
-        }).catch(function (error) {
-            console.error('ServiceWorker registration failed: ', error);
-        });
+        installServiceworker();
     }
+}
+
+function installServiceworker() {
+    navigator.serviceWorker.register('/serviceworker.js').then(function (registration) {
+        if (registration.installing) {
+            console.info('Serviceworker installing...');
+        } else if (registration.waiting) {
+            console.info('Serviceworker installed, waiting for handover by old serviceworker...');
+        } else if (registration.active) {
+            console.info('Serviceworker active');
+        }
+        console.log('Serviceworker scope: ', registration.scope);
+    }).catch(function (error) {
+        console.error('Serviceworker registration failed: ', error);
+    });
+
+    navigator.serviceWorker.onmessage = function (event) {
+        var message = JSON.parse(event.data);
+        var refreshed = message.type === 'refresh';
+        var qualify = message.url.includes('--refresh');
+        var old = localStorage.currentETag;
+
+        var changed = old !== message.eTag;
+
+        if (refreshed && qualify && changed) {
+            fetch("/post/register--refresh.html").then(validate).then(insertRegister);
+            localStorage.currentETag = message.eTag;
+        }
+    };
 }
 
 function relay(event) {
+    // Prevent the browser from navigating to the internal urls, and instead let the javascript
+    // fetch the article.
     if (event.target.pathname.startsWith("/post/") || event.target.pathname.startsWith("/authors/")) {
         event.preventDefault();
         document.getElementById("navigation-toggle").checked = false;
-        fetchArticle(event.target.href, false);
+        const path = event.target.pathname + event.target.search + event.target.hash;
+        fetchArticle(path, false);
     }
 }
 
-// Fetch a article from provided url, bool to replace or push a history state
 function fetchArticle(url, replace) {
-    if (url == "/" || url == "/index" || url == "/index.html" || url == "/index.htm") {
-        var path = {
-            path: "/"
-        };
-        if (replace) {
-            history.replaceState(path, null, "/");
-        } else {
-            history.pushState(path, null, "/");
-        }
-        fetch("/post/feed").then(validate).then(insertArticle).catch(offline);
-    } else {
+    // Fetch a article from the provided url and then call to insert it
+    // into the document. Replace bool determit if to replace or push a history state.
+    if (url.startsWith("/post/")) {
         var path = {
             path: url
         };
@@ -73,11 +82,24 @@ function fetchArticle(url, replace) {
         } else {
             history.pushState(path, null, url);
         }
-        fetch(url).then(validate).then(insertArticle);
+        fetch(url).then(validate).then(insertArticle).catch(offline);
+    }
+    else {
+        // If url is pointing to a index page, fetch the "startpage".
+        var path = {
+            path: "/"
+        };
+        if (replace) {
+            history.replaceState(path, null, "/");
+        } else {
+            history.pushState(path, null, "/");
+        }
+        fetch("/post/feed/").then(validate).then(insertArticle).catch(offline);
     }
 }
 
 function validate(response) {
+    // Validate the network response if it is valid or not.
     if (response.ok) {
         return response.text();
     } else {
@@ -90,17 +112,21 @@ function offline() {
 }
 
 function insertArticle(html) {
+    // Removes the previus article from the body node and inserts the new one.
+    // If the web application wants to remove the shell chrome it can remove it.
     var articles = document.getElementsByTagName("article");
     for (var counter = 0; counter < articles.length; ++counter) {
         articles[counter].remove();
     }
-
+    // If the new article contains the meta-tags to hide/remove the shell.
     if (html.includes('data-shellstyle="hide"')) {
         shellstyle(true, false);
     }
     if (html.includes('data-shellstyle="purge"')) {
         shellstyle(false, false);
     }
+    // Try to insert into main node, and if not possible (when the shell is removed)
+    // into the body node.
     try {
         var main = document.getElementsByTagName("main")[0];
         main.insertAdjacentHTML("beforeend", html);
@@ -109,8 +135,9 @@ function insertArticle(html) {
         var body = document.getElementsByTagName("body")[0];
         body.insertAdjacentHTML("beforeend", html);
     }
+    // Register javascript eventhandlers (mainly for the <a> links).
     registerEvents();
-
+    // If the article contains a scriptnode that is wants to run, evaluate it.
     try {
         var entrypoint = document.getElementById("javascript-entrypoint");
         if (entrypoint != null) {
@@ -122,37 +149,46 @@ function insertArticle(html) {
     }
 
 }
-var bodystorage = null;
 
+var bodystorage = null;
 function shellstyle(shell, style) {
-    // Enable or disable the shell by moving it to and from a template node
+    // Enable or disable the shell by moving it to and from a template node.
+    // This enable us to remove the shell if a web application wants to use the
+    // whole page without a chrome. The web application can also choose to keep
+    // or disable the stylesheets to.
     if (!shell) {
+        // Clone the body node.
         var body = document.getElementsByTagName("body")[0];
         bodystorage = body.cloneNode(true);
+
+        // Remove the body node and all its children.
         while (body.firstChild) {
             body.removeChild(body.firstChild);
         }
     } else {
         if (bodystorage != null) {
+            // Restore the body node and clear the temporary storage.
             var body = document.getElementsByTagName("body")[0];
             body.replaceWith(bodystorage);
             bodystorage = null;
         }
     }
-    // Enable or disable main stylesheets
+    // Enable or disable main stylesheets.
     var stylesheets = document.getElementsByClassName("main-stylesheet");
     for (var counter = 0; counter < stylesheets.length; ++counter) {
         stylesheets[counter].disabled = !style;
     }
 }
 
-function insertIndex(html) {
+function insertRegister(html) {
+    // Insert the articles register into the side-panel.
     try {
-        var index = document.getElementById("article-index");
-        while (index.firstChild) {
-            index.removeChild(index.firstChild);
+        var register = document.getElementById("article-register");
+        while (register.firstChild) {
+            register.removeChild(register.firstChild);
         }
-        index.insertAdjacentHTML('beforeend', html);
-    } catch (message) {}
+        register.insertAdjacentHTML('beforeend', html);
+    } catch (message) { }
+    // Register javascript eventhandlers (mainly for the <a> links).
     registerEvents();
 }
