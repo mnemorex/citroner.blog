@@ -4,14 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="shelldocument" content="true" />
-
     <!-- Preload -->
     <link rel="preload" type="text/css" as="style" href="css/style.css" />
-    <link rel="preload" type="text/html" as="document" href="post/index-articles.html" />
-    <link rel="preload" type="text/html" as="document" href="feed.html" />
     <link rel="preload" as="script" href="javascript/sitescript.js" />
+    <link rel="preload" type="text/html" as="document" href="post/register--refresh.html" crossorigin="anonymous" />
+    <link rel="preload" type="text/html" as="document" href="post/feed/index.html" crossorigin="anonymous" />
+    <link rel="prefetch" as="style" href="font/font-noto-sans/font-noto-sans.css" />
+    <link rel="prefetch" as="style" href="font/font-blogger-sans/font-blogger-sans.css" />
     <!-- Javascript -->
-    <script defer src="javascript/sitescript.js"></script>
     <script>
         const language = navigator.language;
         var tag = document.getElementsByTagName('html');
@@ -20,12 +20,11 @@
         } else {
             tag[0].setAttribute('lang', 'en');
         }
-
     </script>
     <!-- Stylesheet -->
+    <link rel="stylesheet" type="text/css" class="main-stylesheet" href="css/style.css" />
     <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/font-noto-sans/font-noto-sans.css" />
     <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/font-blogger-sans/font-blogger-sans.css" />
-    <link rel="stylesheet" type="text/css" class="main-stylesheet" href="css/style.css" />
     <!-- <link rel="stylesheet" type="text/css" class="main-stylesheet" href="css/media-print.css" media="print" /> -->
     <!-- Publisher Information -->
     <meta name="author" content="Charlie Habolin" />
@@ -34,9 +33,11 @@
     <!-- Web manifest values -->
     <title>Citroner bloggen</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="viewport" id="viewport" content="width=user-scalable=no,device-width,minimum-scale=1,maximum-scale=1,initial-scale=1" />
-    <link rel="icon" type="image/png" href="graphics/icons/citroner-250x250.png" sizes="500x500">
+    <meta name="viewport" id="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1" />
     <link rel="apple-touch-icon" href="graphics/icons/citroner-250x250.png">
+    <link rel="icon" type="image/svg" href="graphics/icons/citroner.svg">
+    <!-- Javascript -->
+    <script defer src="javascript/sitescript.js"></script>
 </head>
 
 <body>
@@ -52,14 +53,21 @@
             <nav>
                 <ul>
                     <li><span lang="en">Articles</span> <span lang="sv">Artiklar</span>
-                        <ul id="article-index"></ul>
+                        <ul id="article-register"></ul>
                     </li>
                 </ul>
             </nav>
         </aside>
         <main>
             <label class="navigation-toggle" for="navigation-toggle">&#9776;</label>
-            <mark lang="en" data-lang-localized="true"><strong>This article is written in Swedish and it seems that it is not your native language. You are welcome to use translation services like Google Translate 😊</strong></mark>
+            <mark lang="en" data-lang-localized="true"><strong>This article is written in Swedish and it seems that it
+                    is not your native language. You are welcome to use translation services like Google Translate 😊</strong></mark>
+            <article>
+                <header>
+                    <h1 lang="sv">Laddar in... ⌛</h1>
+                    <h1 lang="en">Loading... ⌛</h1>
+                </header>
+            </article>
         </main>
     </div>
 </body>
