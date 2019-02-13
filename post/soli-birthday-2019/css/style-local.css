@@ -1,0 +1,94 @@
+@charset "UTF-8";
+@import url('../font/autour-one/autour-one.css');
+@import url('animate.css');
+
+body {
+    background: #FFB4C1;
+    background: -webkit-linear-gradient(top right, #FFB4C1, #D3596E);
+    background: -moz-linear-gradient(top right, #FFB4C1, #D3596E);
+    background: linear-gradient(top right, #FFB4C1, #D3596E);
+    overflow: hidden;
+}
+
+article {
+    position: relative;
+}
+
+header {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column-reverse;
+    align-content: center;
+    z-index: 2;
+}
+
+div {
+    display: inline;
+}
+
+header img {
+    width: 50vmin;
+    align-self: center;
+}
+
+header h1 {
+    font-family: "Autour One";
+    font-size: 8vh;
+    color: #f7da7d;
+    text-align: center;
+}
+
+header h1 span {
+    background: #464A82;
+    background: -webkit-linear-gradient(top right, #464A82, #D4259B);
+    background: -moz-linear-gradient(top right, #464A82, #D4259B);
+    background: linear-gradient(top right, #464A82, #D4259B); 
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+a:link,
+a:hover,
+a:active,
+a:visited{
+    color: inherit;
+}
+
+figure {
+    position: absolute;
+    z-index: -1;
+}
+
+figure.right {
+    transform: rotate(39deg);
+    left: 10vmin;
+    top: 10vmin;
+}
+
+figure.left {
+    transform: rotate(56deg);
+    float: right;
+    right: 0;
+    top: 30vmin;
+}
+
+figure.middle {
+    transform: rotate(4deg);
+    left: 0;
+    top: 50vmin;
+}
+
+img.egg-small {
+    width: 10vmin;
+}
+
+img.egg-medium {
+    width: 13vmin;
+}
+
+img.egg-big {
+    width: 20vmin;
+}
