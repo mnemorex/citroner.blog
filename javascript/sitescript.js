@@ -4,7 +4,7 @@ window.onload = function () {
     // Read the hash on the end of the url and fetch that article
     fetchArticle(window.location.hash.substring(1) + window.location.search, true);
 
-    registerServiceworker();
+    // registerServiceworker();
 
     // Load side-panel
     fetch("/post/register--refresh.html").then(validate).then(insertRegister);
@@ -20,7 +20,10 @@ window.onpopstate = function (event) {
 function registerEvents() {
     var links = document.getElementsByTagName("a");
     for (var counter = 0; counter < links.length; ++counter) {
-        links[counter].addEventListener("click", relay);
+	if(links[counter].getAttribute("download") == null)
+	{
+		links[counter].addEventListener("click", relay);
+        }
     }
 }
 
