@@ -60,12 +60,6 @@ a[href^="mailto:"]:visited:hover {
     background: #ffd7b0;
 }
 
-nav a:link:hover,
-nav a:visited:hover {
-    padding-left: 0.6rem;
-    background: rgba(0, 0, 0, 0);
-}
-
 /* end link */
 
 html,
@@ -192,7 +186,13 @@ nav ul {
     font-family: var(--font-header);
     font-size: calc(var(--font-size-h3) + 0.4rem);
     list-style-type: none;
-    padding-left: 1.3rem;
+    padding-left: 0.9rem;
+    padding-right: 0.9rem;
+}
+
+nav ul ul {
+    padding-left: 0;
+    padding-right: 0;
 }
 
 nav ul ul > li {
@@ -295,10 +295,16 @@ article > header > img:hover {
 article header {
     overflow: hidden;
     margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom-style: dotted;
+    border-bottom-color: #c9c9c9;
 }
 
 article header span {
     font-weight: bold;
+}
+article header h1 {
+    margin-bottom: 1rem;
 }
 
 .top {

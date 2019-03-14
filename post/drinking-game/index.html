@@ -1,0 +1,354 @@
+<article data-author-id="monkcs" lang="sv">
+    <script src="/javascript/shellcheck.js"></script><noscript><meta charset="UTF-8"><link rel="stylesheet" type="text/css" href="/css/style.css" /></noscript>
+    <header>
+        <h1 lang="sv">Drickspel</h1>
+        <h1 lang="en">Drinking game</h1>
+        <img src="/graphics/authors/charlie-habolin.jpg"> <span>Charlie Habolin</span>
+        <br/>
+        <time datetime="2019-03-14T22:00+01:00">14 mars 2019. 22:00</time>
+    </header>
+    <p>Med för mycket fritid byggde jag ett litet enkelt brädspel som skulle kunna bli det nya shotsspelet jag skulle förlora mot mina vänner med. Även om denna perfekta guiden från <a href="https://www.wikihow.com/Get-Drunk-Fast" target="_blank">wikiHow</a> är en bra hjälp på vägen.</p>
+    <figure>
+        <img src="graphics/closeup.jpg" alt="Närbild på spelet" style="filter: brightness(115%) contrast(100%) hue-rotate(356deg) opacity(100%) saturate(115%);">
+    </figure>
+    <p>Spelet är programmerat till och styrs av en <a href="https://www.arduino.cc/en/Guide/ArduinoProMini" target="_blank">Arduino Pro Mini</a> med en ATmega328 i ett väldigt litet TQFP-32 paket. Så samma mikrokontroller som i Arduino Uno vilket gör det friktionsfritt att utveckla på Uno först. Då kortet dock inte har något USB-gränssnitt behöver programmering ske från en annan enhet, där en <a href="https://store.arduino.cc/arduino-uno-rev3" target="_blank">Arduino Uno</a> kan användas, konfigurerad som <abbr title="In System Programmer">ISP</abbr>.</p>
+    <p>Varje spelar får välja en stoppknapp som det gäller att vara först på att trycka när ljud och ljus slutar blinka. Tjuvstartare får minuspoäng, först till fyra vinner.</p>
+    <figure>
+        <video loop muted autoplay playsinline>
+            <source src="graphics/playtime-h.265--no-caching.mp4" type="video/mp4">
+            <source src="graphics/playtime-h.264--no-caching.mp4" type="video/mp4">
+        </video>
+        <figcaption>Först att trycka får poäng</figcaption>
+    </figure>
+    <p>Till Pro Mini:n är fem tryckknappar med olika färger anslutna, en aktiv buzzer som kan spela upp olika frekvenser från mikrokontrollern, samt en 24 stycken rgb LED-ring kontrollerad med <a href="https://web.archive.org/web/https://cdn-shop.adafruit.com/datasheets/WS2812.pdf" target="_blank">WS2812</a> (aka <a href="https://www.adafruit.com/category/168" target="_blank" >Neopixel</a>). Strömförsörjning kommer från två AA-batterier i serie.</p>
+    <figure>
+        <img src="graphics/fritzing-view.svg" alt="Kopplingsschema över elkretsen">
+        <figcaption>Fritzing kopplingsschema på spelet. <a href="graphics/fritzing-view.fzz" download>Ladda ned</a></figcaption>
+    </figure>
+    <p>Koden använder både Adafruit's <a href="https://github.com/adafruit/Adafruit_NeoPixel" target="_blank">Neopixel</a> bibliotek för att styra pixelringen, och mitt egna <a href="https://github.com/monkcs/devuino" target="_blank">Devuino</a> som är ett objektorienterat C++ bibliotek för tryckknapparna.
+    Fördelen med Devuino är att varje knapp blir ett eget objekt som minimerar risken för buggar och ökar enkelheten att skriva kod. </p>
+    <figure>
+        <pre><code data-language="cpp">#include &lt;Devuino.h>
+#include &lt;Adafruit_NeoPixel.h>
+
+Adafruit_NeoPixel pixelring = Adafruit_NeoPixel(24, 10);
+
+const int tonePin = 8;
+const int playercount = 5;
+int points[playercount] = {0, 0, 0, 0, 0};
+Button&lt;Onboard> players[playercount] = {
+  Button&lt;Onboard>(Onboard(15), pin::Resistor::PullUp),
+  Button&lt;Onboard>(Onboard(12), pin::Resistor::PullUp),
+  Button&lt;Onboard>(Onboard(14), pin::Resistor::PullUp),
+  Button&lt;Onboard>(Onboard(3), pin::Resistor::PullUp),
+  Button&lt;Onboard>(Onboard(2), pin::Resistor::PullUp)
+};
+uint32_t playercolor[playercount] = {
+  pixelring.Color(0x0, 0x0, 0xff),
+  pixelring.Color(0xff, 0xff, 0xff),
+  pixelring.Color(0xff, 0x0, 0x0),
+  pixelring.Color(0xff, 0xff, 0x0),
+  pixelring.Color(0x0, 0xff, 0x0)
+};
+
+// Return pressed index, if none pressed return -1
+int pressed(bool wait)
+{
+  do
+  {
+    for (int index = 0; index &lt; playercount; index++)
+    {
+      if (!players[index].value())
+      {
+        return index;
+      }
+    }
+  } while (wait);
+  return -1;
+};
+
+void setup()
+{
+  randomSeed(analogRead(A5));
+  Serial.begin(9600);
+  pixelring.begin();
+  pixelring.setBrightness(20);
+  pixelring.show();
+
+  while (pressed(false) == -1)
+  {
+    chase(pixelring.Color(0x55, 0x1a, 0x8b), 80, 5);
+  }
+  solid(pixelring.Color(0x0, 0x0, 0x0));
+  delay(3000);
+}
+
+void loop()
+{
+  int prepressed;
+
+  if (countdown(prepressed))
+  {
+    noTone(tonePin);
+    solid(pixelring.Color(0x0, 0x0, 0x0));
+
+    int winner = pressed(true);
+
+    solid(playercolor[winner]);
+    tone(tonePin, 700);
+    delay(300);
+    noTone(tonePin);
+    delay(50);
+    tone(tonePin, 700);
+    delay(300);
+    noTone(tonePin);
+    delay(50);
+    tone(tonePin, 1000);
+    delay(500);
+    noTone(tonePin);
+
+    chase(playercolor[winner], 80, 15);
+    solid(pixelring.Color(0x0, 0x0, 0x0));
+    delay(400);
+
+    pointDisplay(true, winner);
+
+    for (int counter = 0; counter &lt; playercount; counter++)
+    {
+      if (points[counter] == 4)
+      {
+        tone(tonePin, 700);
+        delay(300);
+        noTone(tonePin);
+        delay(50);
+        tone(tonePin, 700);
+        delay(300);
+        noTone(tonePin);
+        delay(50);
+        tone(tonePin, 1100);
+        delay(500);
+        noTone(tonePin);
+        while (true)
+        {
+          chase(playercolor[counter], 80, 70);
+        }
+      }
+    }
+
+    // Continue game
+    solid(pixelring.Color(0x0, 0x0, 0x0));
+    delay(1500);
+  }
+  else
+  {
+    // Button pressed before stop, remove point from player
+
+    for (int counter = 0; counter &lt; 2; counter++)
+    {
+      tone(tonePin, 600);
+      delay(400);
+      noTone(tonePin);
+      chase(playercolor[prepressed], 1, 70);
+
+      tone(tonePin, 600);
+      delay(200);
+      noTone(tonePin);
+      chase(pixelring.Color(0xff, 0x0, 0x0), 1, 70);
+    }
+
+    solid(pixelring.Color(0x0, 0x0, 0x0));
+    noTone(tonePin);
+    delay(1000);
+
+    pointDisplay(false, prepressed);
+  }
+}
+
+bool countdown(int& prepressed)
+{
+  int pitchMin = 400;
+  int loopMax = random(2, 11);
+  int pitchMax = random(1900, 3000);
+  int stopP = random(pitchMin, pitchMax);
+
+  unsigned long previoustime = 0;
+  long delaytime = 0;
+
+  for (int loops = 1; loops &lt;= loopMax; loops++)
+  {
+    for (int pitch = pitchMax; pitch > pitchMin; pitch = pitch - 200)
+    {
+      noTone(tonePin);
+      glitter(0.04);
+      tone(tonePin, pitch);
+
+      delaytime = 256 - (35 + (20 * loops));
+      unsigned long previoustime = millis();
+      unsigned long currenttime = previoustime;
+      while (currenttime - previoustime &lt; delaytime)
+      {
+        currenttime = millis();
+
+        if (loops == loopMax && pitch &lt;= stopP)
+        {
+          // The countdown is ended and none pressed before
+          return true;
+        }
+
+        prepressed = pressed(false);
+        if (prepressed != -1)
+        {
+          // Someone cheated
+          return false;
+        }
+      }
+    }
+  }
+}
+
+void pointDisplay(bool addPoints, int player)
+{
+  if (addPoints)
+  {
+    points[player] += 1;
+  }
+  else
+  {
+    points[player] -= 1;
+  }
+  solid(pixelring.Color(0x0, 0x0, 0x0));
+
+
+  // Blue
+  int topblue = 3;
+  for (int counter = 23; (counter % 23 ) &lt;= 3; counter++)
+  {
+    if (points[0] > topblue - (counter % 23))
+    {
+      pixelring.setPixelColor(counter % 24, playercolor[0]);
+    }
+    else
+    {
+      pixelring.setPixelColor(counter % 24, pixelring.Color(0x10, 0x10, 0x10));
+    }
+  }
+
+  // White
+  int topwhite = 7;
+  for (int counter = 4; counter &lt;= 7; counter++)
+  {
+    if (points[1] > topwhite - counter)
+    {
+      pixelring.setPixelColor(counter, playercolor[1]);
+    }
+    else
+    {
+      pixelring.setPixelColor(counter, pixelring.Color(0x10, 0x10, 0x10));
+    }
+  }
+
+  // Red
+  int topred = 12;
+  for (int counter = 9; counter &lt;= 12; counter++)
+  {
+    if (points[2] > topred - counter)
+    {
+      pixelring.setPixelColor(counter, playercolor[2]);
+    }
+    else
+    {
+      pixelring.setPixelColor(counter, pixelring.Color(0x10, 0x10, 0x10));
+    }
+  }
+
+  // Yellow
+  int topyellow = 17;
+  for (int counter = 14; counter &lt;= 17; counter++)
+  {
+    if (points[3] > topyellow - counter)
+    {
+      pixelring.setPixelColor(counter, playercolor[3]);
+    }
+    else
+    {
+      pixelring.setPixelColor(counter, pixelring.Color(0x10, 0x10, 0x10));
+    }
+  }
+
+  // Green
+  int topgreen = 22;
+  for (int counter = 19; counter &lt;= 22; counter++)
+  {
+    if (points[4] > topgreen - counter)
+    {
+      pixelring.setPixelColor(counter, playercolor[4]);
+    }
+    else
+    {
+      pixelring.setPixelColor(counter, pixelring.Color(0x10, 0x10, 0x10));
+    }
+  }
+
+  pixelring.show();
+
+  delay(4000);
+}
+
+void chase(uint32_t color, uint8_t wait, int rounds)
+{
+  for (int cycle = 0; cycle &lt; rounds; cycle++)
+  {
+    for (int step = 0; step &lt; 3; step++)
+    {
+      for (uint16_t counter = 0; counter &lt; pixelring.numPixels(); counter = counter + 3)
+      {
+        pixelring.setPixelColor(counter + step, color); // Turn every third pixel on
+      }
+
+      pixelring.show();
+      delay(wait);
+
+      for (uint16_t counter = 0; counter &lt; pixelring.numPixels(); counter = counter + 3)
+      {
+        pixelring.setPixelColor(counter + step, 0); // Turn every third pixel off
+      }
+    }
+  }
+}
+
+void solid(uint32_t color)
+{
+  for (int counter = 0; counter &lt; pixelring.numPixels(); counter++)
+  {
+    pixelring.setPixelColor(counter, color);
+  }
+  pixelring.show();
+}
+
+float pos = 0.0;
+void glitter(float rate)
+{
+  // cycle through x times
+  for (int x = 0; x &lt; 24; x++)
+  {
+    pos = pos + rate;
+    for (int i = 0; i &lt; pixelring.numPixels(); i++)
+    {
+      // sine wave, 3 offset waves make a rainbow!
+      float level1 = sin(i + pos) * 127 + 128;
+      float level2 = sin(i + pos) * 127 + 180;
+      float level3 = sin(i + pos) * 127 + 64;
+      // set color level
+      pixelring.setPixelColor(i, (int)level1, (int)level2, (int)level3);
+    }
+    pixelring.show();
+  }
+}</code></pre>
+        <figcaption>drinking-game.ino <a href="code/drinking-game.ino" download>Ladda ned</a></figcaption>
+    </figure>
+    <footer>
+        <address>
+            Kontakta mig på <a href="mailto:charlie.habolin@monkcs.se?subject=citroner.blog - Drinking Game ">charlie.habolin@monkcs.se</a> om du har någon fråga!
+        </address>
+    </footer>
+</article>
