@@ -569,6 +569,6 @@ main,
 
 @media (prefers-color-scheme: dark) {
     main {
-        background: green;
+       /* background: green;*/
     }
 }
