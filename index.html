@@ -4,68 +4,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="shelldocument" content="true" />
-    <!-- Preload -->
-    <link rel="preload" type="text/css" as="style" href="css/style.css" />
-    <link rel="preload" as="script" href="javascript/sitescript.js" />
-    <link rel="preload" type="text/html" as="document" href="post/register--refresh.html" crossorigin="anonymous" />
-    <link rel="preload" type="text/html" as="document" href="post/feed/index.html" crossorigin="anonymous" />
-    <link rel="prefetch" as="style" href="font/font-noto-sans/font-noto-sans.css" />
-    <link rel="prefetch" as="style" href="font/font-blogger-sans/font-blogger-sans.css" />
+
     <!-- Javascript -->
     <script>
         const language = navigator.language;
-        var tag = document.getElementsByTagName('html');
-        if (language.includes("en") | language.includes("sv")) {
-            tag[0].setAttribute('lang', language);
-        } else {
-            tag[0].setAttribute('lang', 'en');
+        let html = document.getElementsByTagName('html');
+
+        if (language.includes("en") | language.includes("sv"))
+        {
+            html[0].setAttribute('lang', language);
+        }
+        else
+        {
+            html[0].setAttribute('lang', 'en');
         }
     </script>
     <!-- Stylesheet -->
     <link rel="stylesheet" type="text/css" class="main-stylesheet" href="css/style.css" />
-    <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/font-noto-sans/font-noto-sans.css" />
-    <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/font-blogger-sans/font-blogger-sans.css" />
-    <!-- <link rel="stylesheet" type="text/css" class="main-stylesheet" href="css/media-print.css" media="print" /> -->
+
+    <!-- Font -->
+    <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/kollektif/kollektif.css" />
+    <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/noto-mono/noto-mono.css" />
+    <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/noto-sans/noto-sans.css" />
+
     <!-- Publisher Information -->
     <meta name="author" content="Charlie Habolin" />
     <meta name="publisher" content="Charlie Habolin" />
     <meta name="description" content="A blog about electronics, code, life and citroner!" />
-    <!-- Web manifest values -->
-    <title>Citroner bloggen</title>
+
+    <!-- Web manifest -->
+    <title lang="sv">Citroner bloggen</title>
+    <title lang="en">Citroner bloggen</title>
     <link rel="manifest" href="manifest.json">
     <meta name="viewport" id="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1" />
     <link rel="apple-touch-icon" href="graphics/icons/citroner-250x250.png">
     <link rel="icon" type="image/svg" href="graphics/icons/citroner.svg">
+
     <!-- Javascript -->
-    <script defer src="javascript/sitescript.js"></script>
+    <script defer="" src="javascript/sitescript.js"></script>
 </head>
 
 <body>
     <header>
-        <img src="/graphics/icons/citroner.svg">
-        <h1 lang="en">The Citroner<span> Blog</span></h1>
+        <img src="/graphics/icons/citroner.svg" />
+        <h1 lang="en">Citroner<span> Blog</span></h1>
         <h1 lang="sv">Citroner<span> Bloggen</span></h1>
     </header>
     <div class="flex-container">
-        <input type="checkbox" id="navigation-toggle">
+        <input type="checkbox" id="navigation-toggle" />
         <aside>
-            <label class="navigation-toggle" for="navigation-toggle">🞩</label>
+            <label class="navigation-toggle" for="navigation-toggle"> - <span lang="en">Return</span><span lang="sv">Tillbaka</span></label>
             <nav>
                 <ul>
-                    <li><span lang="en">Articles</span> <span lang="sv">Artiklar</span>
+                    <li><h2 lang="en">Articles</h2><h2 lang="sv">Artiklar</h2>
                         <ul id="article-register"></ul>
                     </li>
                 </ul>
             </nav>
         </aside>
         <main>
-            <label class="navigation-toggle" for="navigation-toggle">&#9776;</label>
-            <mark lang="en" data-lang-localized="true"><strong>This article is written in Swedish and it seems that it
-                    is not your native language. You are welcome to use translation services like Google Translate 😊</strong></mark>
+            <label class="navigation-toggle" for="navigation-toggle"> + <span lang="en">Articles</span><span lang="sv">Artiklar</span></label>
+            <mark lang="en" data-lang-localized="true"><strong>This article is written in Swedish and it seems that it is not your native language. You are welcome to use translation services 😊</strong></mark>
             <article>
                 <header>
-                    <h1 lang="sv">Laddar in... ⌛</h1>
-                    <h1 lang="en">Loading... ⌛</h1>
+                    <h1 lang="sv">Hämtar citroner... ⌛</h1>
+                    <h1 lang="en">Fetching lemons... ⌛</h1>
                 </header>
             </article>
         </main>
