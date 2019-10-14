@@ -556,13 +556,13 @@ main,
 
 @media all and (max-width: 450px) {
     aside {
-        transform: translateX(-100%);
-        max-width: 90%;
-        min-width: 90%;
+        transform: translateX(calc(-100% -4rem));
+        max-width: calc(100% - 4rem);
+        min-width: calc(100% - 4rem);
     }
     
     main {
-        transform: translateX(-90%);
+        transform: translateX(calc(-100% + 4rem));
 
     }
 }
