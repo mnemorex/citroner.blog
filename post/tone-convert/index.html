@@ -1,0 +1,94 @@
+<article data-author-id="monkcs" lang="sv">
+    <script src="/javascript/shellcheck.js"></script><noscript><meta charset="UTF-8" /><link rel="stylesheet" type="text/css" href="/css/style.css" /></noscript>
+    <script id="javascript-entrypoint">
+        'use strict';
+
+        var template = document.querySelector('#select-list');
+        var keybutton = document.importNode(template.content, true);
+        keybutton.children[0].id = "key";
+       keybutton.children[0].value = 0;
+        var insert = document.querySelector('#insert-key');
+        insert.appendChild(keybutton);
+        document.getElementById('key').addEventListener('change', convert, false);
+
+        for (var i = 0; i < 32; i++)
+        {
+            var template = document.querySelector('#select-list');
+            var keybutton = document.importNode(template.content, true);
+            keybutton.children[0].id = i;
+            var insert = document.querySelector('#insert');
+            insert.appendChild(keybutton);
+            document.getElementById(i).addEventListener('change', convert, false);
+        }
+
+        convert();
+
+        function convert()
+        {
+            document.querySelector('output').innerHTML = "";
+
+            var distance = -Math.abs(parseInt(document.getElementById('key').value) - parseInt(document.getElementById('0').value));
+
+            for (var i = 0; i < 32; i++)
+            {
+                var template = document.querySelector('#select-list');
+                var keybutton = document.importNode(template.content, true);
+                keybutton.children[0].disabled = true;
+
+                if (parseInt(document.getElementById(i).value) != -1)
+                {
+                    keybutton.children[0].value = (parseInt(document.getElementById(i).value) - distance) % 12;
+                }
+                else
+                {
+                    keybutton.children[0].value = -1;
+                }
+                var insert = document.querySelector('output');
+                insert.appendChild(keybutton);
+            }
+        }
+
+        function differance (a, b) { return Math.abs(a - b); }
+
+    </script>
+
+    <header>
+        <h1 lang="sv">Tonändrare</h1>
+        <h1 lang="en">Tone converter</h1>
+    </header>
+
+    <p>
+      <template id="select-list">
+        <select>
+              <option value="-1"></option>
+              <option value="0">A</option>
+              <option value="1">A♯ / Bb</option>
+              <option value="2">B</option>
+              <option value="3">C</option>
+              <option value="4">C♯ / Db</option>
+              <option value="5">D</option>
+              <option value="6">E</option>
+              <option value="7">E♯ / Fb</option>
+              <option value="8">F</option>
+              <option value="9">F♯ / Gb</option>
+              <option value="10">G</option>
+              <option value="11">G♯ / Ab</option>
+        </select>
+      </template>
+
+      <form id="convert">
+        <div id="insert-key">
+          <input type="reset" />
+          <label for="key">Välj tonart: </label>
+        </div>
+        <br/>
+        <div id="insert"></div>
+        <br/>
+      </form>
+
+      <label>Konvertering </label>
+      <br/>
+      <output></output>
+    </p>
+
+</article>
