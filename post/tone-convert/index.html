@@ -27,7 +27,7 @@
         {
             document.querySelector('output').innerHTML = "";
 
-            var distance = -Math.abs(parseInt(document.getElementById('key').value) - parseInt(document.getElementById('0').value));
+            var distance = parseInt(document.getElementById('key').value) - parseInt(document.getElementById('0').value);
 
             for (var i = 0; i < 32; i++)
             {
@@ -37,7 +37,7 @@
 
                 if (parseInt(document.getElementById(i).value) != -1)
                 {
-                    keybutton.children[0].value = (parseInt(document.getElementById(i).value) - distance) % 12;
+                    keybutton.children[0].value = mod((parseInt(document.getElementById(i).value) + distance), 12);
                 }
                 else
                 {
@@ -49,6 +49,9 @@
         }
 
         function differance (a, b) { return Math.abs(a - b); }
+        function mod(n, m) {
+          return ((n % m) + m) % m;
+        }
 
     </script>
 
