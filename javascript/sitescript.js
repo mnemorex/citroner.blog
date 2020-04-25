@@ -1,95 +1,48 @@
-window.onload = function () {
-    // Make sure the shell is present if it was previously disabled
+window.onload = function ()
+{
+    /* Make sure the shell is present if it was previously disabled */
     shellstyle(true, true);
-    // Read the hash on the end of the url and fetch that article
-    fetchArticle(window.location.hash.substring(1) + window.location.search, true);
 
-    // registerServiceworker();
+    load(window.location.hash.substring(1) + window.location.search, true);
 
-    // Load side-panel
-    fetch("/post/register--refresh.html").then(validate).then(insertRegister);
+    fetch("/post/register--refresh.html").then(validate).then(sidepanel);
 };
 
-window.onpopstate = function (event) {
-    if (event.state) {
+window.onpopstate = function (event)
+{
+    if (event.state)
+    {
         shellstyle(true, true);
-        fetchArticle(event.state.path, true);
+        load(event.state.path, true);
     }
 };
 
-function registerEvents()
+function events()
 {
-    let links = document.getElementsByTagName("a");
-    for (let counter = 0; counter < links.length; ++counter)
+    for (let link of document.getElementsByTagName("a"))
     {
-        if (links[counter].getAttribute("download") == null)
+        if (link.pathname.startsWith("/post/") || link.pathname.startsWith("/authors/"))
         {
-	        links[counter].addEventListener("click", relay);
+            if (link.getAttribute("download") == null)
+            {
+	              link.addEventListener("click", relay);
+            }
         }
     }
-}
-
-function registerServiceworker()
-{
-    if ('serviceWorker' in navigator)
-    {
-        installServiceworker();
-    }
-}
-
-function installServiceworker()
-{
-    navigator.serviceWorker.register('/serviceworker.js').then(function (registration) {
-        if (registration.installing)
-        {
-            console.info('Serviceworker installing...');
-        }
-        else if (registration.waiting)
-        {
-            console.info('Serviceworker installed, waiting for handover by old serviceworker...');
-        }
-        else if (registration.active)
-        {
-            console.info('Serviceworker active');
-        }
-        console.log('Serviceworker scope: ', registration.scope);
-    }).catch(function (error) {
-        console.error('Serviceworker registration failed: ', error);
-    });
-
-    navigator.serviceWorker.onmessage = function (event) {
-        let message = JSON.parse(event.data);
-        let refreshed = message.type === 'refresh';
-        let qualify = message.url.includes('--refresh');
-        let old = localStorage.currentETag;
-
-        let changed = old !== message.eTag;
-
-        if (refreshed && qualify && changed)
-        {
-            fetch("/post/register--refresh.html").then(validate).then(insertRegister);
-            localStorage.currentETag = message.eTag;
-        }
-    };
 }
 
 function relay(event)
 {
-    // Prevent the browser from navigating to the internal urls, and instead let the javascript
-    // fetch the article.
-    if (event.target.pathname.startsWith("/post/") || event.target.pathname.startsWith("/authors/"))
-    {
-        event.preventDefault();
-        document.getElementById("navigation-toggle").checked = false;
-        const path = event.target.pathname + event.target.search + event.target.hash;
-        fetchArticle(path, false);
-    }
+    event.preventDefault();
+
+    document.getElementById("navigation-toggle").checked = false;
+
+    const path = event.target.pathname + event.target.search + event.target.hash;
+    load(path, false);
 }
 
-function fetchArticle(url, replace)
+function load(url, replace)
 {
-    // Fetch a article from the provided url and then call to insert it
-    // into the document. Replace bool determit if to replace or push a history state.
     if (url.startsWith("/post/"))
     {
         var path = {
@@ -105,11 +58,10 @@ function fetchArticle(url, replace)
             history.pushState(path, null, url);
         }
 
-        fetch(url).then(validate).then(insertArticle).catch(offline);
+        fetch(url).then(validate).then(insert).catch(offline);
     }
     else
     {
-        // If url is pointing to a index page, fetch the "startpage".
         var path = {
             path: "/"
         };
@@ -123,34 +75,34 @@ function fetchArticle(url, replace)
             history.pushState(path, null, "/");
         }
 
-        fetch("/post/feed/").then(validate).then(insertArticle).catch(offline);
+        fetch("/post/feed/").then(validate).then(insert).catch(offline);
     }
 }
 
-function validate(response) {
-    // Validate the network response if it is valid or not.
-    if (response.ok) {
+function validate(response)
+{
+    if (response.ok)
+    {
         return response.text();
-    } else {
+    }
+    else
+    {
         throw new Error('Network response was not valid');
     }
 }
 
 function offline()
 {
-    fetch("/post/offline/").then(validate).then(insertArticle);
+    fetch("/post/offline/").then(validate).then(insert);
 }
 
-function insertArticle(html)
+function insert(html)
 {
-    // Removes the previus article from the body node and inserts the new one.
-    // If the web application wants to remove the shell chrome it can remove it.
-    let articles = document.getElementsByTagName("article");
-    for (let counter = 0; counter < articles.length; ++counter)
+    for (let article of document.getElementsByTagName("article"))
     {
-        articles[counter].remove();
+        article.remove();
     }
-    // If the new article contains the meta-tags to hide/remove the shell.
+
     if (html.includes('data-shellstyle="hide"'))
     {
         shellstyle(true, false);
@@ -159,22 +111,26 @@ function insertArticle(html)
     {
         shellstyle(false, false);
     }
-    // Try to insert into main node, and if not possible (when the shell is removed)
-    // into the body node.
+
     try
     {
-        let main = document.getElementsByTagName("main")[0];
-        main.insertAdjacentHTML("beforeend", html);
+        for (let main of document.getElementsByTagName("main"))
+        {
+            main.insertAdjacentHTML("beforeend", html);
+        }
     }
     catch (message)
     {
         console.error("Not possible to get refrence of 'main' node, inserting into 'body' instead");
-        let body = document.getElementsByTagName("body")[0];
-        body.insertAdjacentHTML("beforeend", html);
+
+        for (let body of document.getElementsByTagName("body"))
+        {
+            body.insertAdjacentHTML("beforeend", html);
+        }
     }
-    // Register javascript eventhandlers (mainly for the <a> links).
-    registerEvents();
-    // If the article contains a scriptnode that is wants to run, evaluate it.
+
+    events();
+
     try
     {
         let entrypoint = document.getElementById("javascript-entrypoint");
@@ -200,7 +156,6 @@ function shellstyle(shell, style)
     // or disable the stylesheets to.
     if (!shell)
     {
-        // Clone the body node.
         let body = document.getElementsByTagName("body")[0];
         bodystorage = body.cloneNode(true);
 
@@ -220,27 +175,25 @@ function shellstyle(shell, style)
             bodystorage = null;
         }
     }
-    // Enable or disable main stylesheets.
-    let stylesheets = document.getElementsByClassName("main-stylesheet");
-    for (let counter = 0; counter < stylesheets.length; ++counter)
+
+    for (let stylesheet of document.getElementsByClassName("main-stylesheet"))
     {
-        stylesheets[counter].disabled = !style;
+        stylesheet.disabled = !style;
     }
 }
 
-function insertRegister(html)
+function sidepanel(html)
 {
-    // Insert the articles register into the side-panel.
     try
     {
-        let register = document.getElementById("article-register");
-        while (register.firstChild)
+        for (let node of document.getElementById("article-register").children)
         {
-            register.removeChild(register.firstChild);
+            node.remove();
         }
-        register.insertAdjacentHTML('beforeend', html);
+
+        document.getElementById("article-register").insertAdjacentHTML('beforeend', html);
     }
     catch (message) { }
-    // Register javascript eventhandlers (mainly for the <a> links).
-    registerEvents();
+
+    events();
 }
