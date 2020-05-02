@@ -1,12 +1,9 @@
-window.onload = function ()
-{
     /* Make sure the shell is present if it was previously disabled */
     shellstyle(true, true);
 
     load(window.location.hash.substring(1) + window.location.search, true);
 
     fetch("/post/register--refresh.html").then(validate).then(sidepanel);
-};
 
 window.onpopstate = function (event)
 {

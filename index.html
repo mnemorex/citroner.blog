@@ -5,28 +5,26 @@
     <meta charset="UTF-8" />
     <meta name="shelldocument" content="true" />
 
-    <!-- Javascript -->
     <script>
-        const language = navigator.language;
-        let html = document.getElementsByTagName('html');
-
-        if (language.includes("en") | language.includes("sv"))
+        if (navigator.language.includes("sv"))
         {
-            html[0].setAttribute('lang', language);
-        }
-        else
-        {
-            html[0].setAttribute('lang', 'en');
+            document.documentElement.setAttribute('lang', 'sv');
         }
     </script>
+
+    <!-- Preload -->
+    <link rel="preload" href="post/register--refresh.html" as="fetch">
+
+    <!-- Javascript -->
+    <script defer src="javascript/sitescript.js"></script>
 
     <!-- Stylesheet -->
     <link rel="stylesheet" type="text/css" class="main-stylesheet" href="css/style.css" />
 
     <!-- Font -->
-    <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/kollektif/kollektif.css" />
     <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/noto-mono/noto-mono.css" />
     <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/noto-sans/noto-sans.css" />
+    <link rel="stylesheet" type="text/css" class="main-stylesheet" href="font/kollektif/kollektif.css" />
 
     <!-- Publisher Information -->
     <meta name="author" content="Charlie Habolin" />
@@ -38,11 +36,8 @@
     <title lang="en">Citroner Blog</title>
     <link rel="manifest" href="manifest.json" />
     <meta name="viewport" id="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="apple-touch-icon" href="graphics/icons/citroner-250x250.png" />
+    <link rel="apple-touch-icon" href="graphics/icons/citroner-250x250-background.png" />
     <link rel="icon" type="image/svg" href="graphics/icons/citroner.svg" />
-
-    <!-- Javascript -->
-    <script src="javascript/sitescript.js"></script>
 </head>
 
 <body>
