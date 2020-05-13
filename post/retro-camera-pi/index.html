@@ -25,7 +25,7 @@
     </figure>
 
     <h2>Det fysiska</h2>
-    Kameran är 3d modellerad och utskriven i PLA-filament på en <a href="https://printm3d.com/themicro/" target="_blank">M3D Micro</a> skrivare.
+    Kameran är 3d modellerad och utskriven i PLA-filament på en <a href="https://printm3d.com/themicro/" target="_blank" rel="noopener noreferrer">M3D Micro</a> skrivare.
     <figure>
         <img src="graphics/all-parts.jpg" alt="Alla delar som behövdes för bygget" />
         <figcaption>Alla delar som behövdes för att bygga kameran</figcaption>
@@ -38,7 +38,7 @@
         <figcaption>Här är kameran halvt byggd</figcaption>
     </figure>
     <h2>Mjukvara</h2>
-    <p>Mjukvaran består av ett <a href="https://www.python.org/" target="_blank">Pythonskript</a> som sköter inspelning samt några bashskript för hantering av några systemfunktioner. Python skriptet körs om det är installerat som en deamon vid upstart. Jag använder mig av <a href="https://github.com/RPi-Distro/python-gpiozero" target="_blank">gpiozero</a> för att interagera med gpio-pins på Raspberry Pi zero</p>
+    <p>Mjukvaran består av ett <a href="https://www.python.org/" target="_blank" rel="noopener noreferrer">Pythonskript</a> som sköter inspelning samt några bashskript för hantering av några systemfunktioner. Python skriptet körs om det är installerat som en deamon vid upstart. Jag använder mig av <a href="https://github.com/RPi-Distro/python-gpiozero" target="_blank" rel="noopener noreferrer">gpiozero</a> för att interagera med gpio-pins på Raspberry Pi zero</p>
     <figure>
         <pre><code data-language="python">#!/usr/bin/env python3
 
@@ -154,7 +154,7 @@ pause()</code></pre>
         <figcaption>retro-camera-pi</figcaption>
     </figure>
     <p>Så när användaren trycker på slutarknappen körs <code class="language-python">recordingStart()</code> som tänder blixten om denna är aktiverad och sedan börjar spela in video till den virtuella diskfilen. När man sedan släpper slutaren körs då <code class="language-python">recordingEnd()</code> som avslutar inspelningen, släcker blixten samt sammanlänkar videon med tidigare klipp till en kontinuerlig film.</p>
-    <p>För att kunna komma åt videon, trycker man på lagringsknappen som avmonterar den virtuella diskfilen och skickar den som argument till kernelmodulen <em><a href="https://www.kernel.org/doc/Documentation/usb/mass-storage.txt" target="_blank">g_mass_storage</a></em> som emulerar en usb lagringsenhet över USB-C porten. För indikation släcks den gröna lysdioden. När kameran är i lagringsläge går det inte att göra inspelningar. </p>
+    <p>För att kunna komma åt videon, trycker man på lagringsknappen som avmonterar den virtuella diskfilen och skickar den som argument till kernelmodulen <em><a href="https://www.kernel.org/doc/Documentation/usb/mass-storage.txt" target="_blank" rel="noopener noreferrer">g_mass_storage</a></em> som emulerar en usb lagringsenhet över USB-C porten. För indikation släcks den gröna lysdioden. När kameran är i lagringsläge går det inte att göra inspelningar. </p>
     <figure>
         <img src="graphics/camera-usb-mode.jpg" alt="Kameran i usb-läge">
     </figure>
@@ -170,12 +170,12 @@ pause()</code></pre>
     <p>När man ska stänga av kameran, trycker man in blixtknappen och därefter lagrigsknappen. Vänta tills de båda lysdioderna slocknat innan strömmen stängs av med skjutknappen. Den knapptryckningen initierar avstängning av linuxkerneln <mark>Annars är det risk att filsystemen kan bli korrupt.</mark> Detta då jag gjorde en designmiss och senare inte fick plats med någon form av soft-power krets.</p>
 
     <h2>Länkar</h2>
-    <p>Källkoden finns publikt på <a href="https://github.com/monkcs/retro-camera-pi" target="_blank">Github</a> att ladda ned eller forka, och är släppt under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">GNU GPLv3</a> licens. I repositoryn finns de tillhörande skripten för att aktivera och hantera kernelmodulerna, samt installationsskript.
+    <p>Källkoden finns publikt på <a href="https://github.com/monkcs/retro-camera-pi" target="_blank" rel="noopener noreferrer">Github</a> att ladda ned eller forka, och är släppt under <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank" rel="noopener noreferrer">GNU GPLv3</a> licens. I repositoryn finns de tillhörande skripten för att aktivera och hantera kernelmodulerna, samt installationsskript.
 
         <h3>Länkar</h3>
         <p>
-            <a href="https://gpiozero.readthedocs.io/en/stable/" target="_blank">Gpio Zero dokumentation</a><br>
-            <a href="https://gist.github.com/gbaman/50b6cca61dd1c3f88f41" target="_blank">Usb gadget mode setup</a>
+            <a href="https://gpiozero.readthedocs.io/en/stable/" target="_blank" rel="noopener noreferrer">Gpio Zero dokumentation</a><br>
+            <a href="https://gist.github.com/gbaman/50b6cca61dd1c3f88f41" target="_blank" rel="noopener noreferrer">Usb gadget mode setup</a>
         </p>
         <footer>
             <address>

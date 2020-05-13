@@ -7,11 +7,11 @@
         <br/>
         <time datetime="2019-03-14T22:00+01:00">14 mars 2019. 22:00</time>
     </header>
-    <p>Med för mycket fritid byggde jag ett litet enkelt brädspel som skulle kunna bli det nya shotsspelet jag skulle förlora mot mina vänner med. Även om denna perfekta guiden från <a href="https://www.wikihow.com/Get-Drunk-Fast" target="_blank">wikiHow</a> är en bra hjälp på vägen.</p>
+    <p>Med för mycket fritid byggde jag ett litet enkelt brädspel som skulle kunna bli det nya shotsspelet jag skulle förlora mot mina vänner med. Även om denna perfekta guiden från <a href="https://www.wikihow.com/Get-Drunk-Fast" target="_blank" rel="noopener noreferrer">wikiHow</a> är en bra hjälp på vägen.</p>
     <figure>
         <img src="graphics/closeup.jpg" alt="Närbild på spelet" style="filter: brightness(115%) contrast(100%) hue-rotate(356deg) opacity(100%) saturate(115%);">
     </figure>
-    <p>Spelet är programmerat till och styrs av en <a href="https://www.arduino.cc/en/Guide/ArduinoProMini" target="_blank">Arduino Pro Mini</a> med en ATmega328 i ett väldigt litet TQFP-32 paket. Så samma mikrokontroller som i Arduino Uno vilket gör det friktionsfritt att utveckla på Uno först. Då kortet dock inte har något USB-gränssnitt behöver programmering ske från en annan enhet, där en <a href="https://store.arduino.cc/arduino-uno-rev3" target="_blank">Arduino Uno</a> kan användas, konfigurerad som <abbr title="In System Programmer">ISP</abbr>.</p>
+    <p>Spelet är programmerat till och styrs av en <a href="https://www.arduino.cc/en/Guide/ArduinoProMini" target="_blank" rel="noopener noreferrer">Arduino Pro Mini</a> med en ATmega328 i ett väldigt litet TQFP-32 paket. Så samma mikrokontroller som i Arduino Uno vilket gör det friktionsfritt att utveckla på Uno först. Då kortet dock inte har något USB-gränssnitt behöver programmering ske från en annan enhet, där en <a href="https://store.arduino.cc/arduino-uno-rev3" target="_blank" rel="noopener noreferrer">Arduino Uno</a> kan användas, konfigurerad som <abbr title="In System Programmer">ISP</abbr>.</p>
     <p>Varje spelar får välja en stoppknapp som det gäller att vara först på att trycka när ljud och ljus slutar blinka. Tjuvstartare får minuspoäng, först till fyra vinner.</p>
     <figure>
         <video loop muted autoplay playsinline>
@@ -20,12 +20,12 @@
         </video>
         <figcaption>Först att trycka får poäng</figcaption>
     </figure>
-    <p>Till Pro Mini:n är fem tryckknappar med olika färger anslutna, en aktiv buzzer som kan spela upp olika frekvenser från mikrokontrollern, samt en 24 stycken rgb LED-ring kontrollerad med <a href="https://web.archive.org/web/https://cdn-shop.adafruit.com/datasheets/WS2812.pdf" target="_blank">WS2812</a> (aka <a href="https://www.adafruit.com/category/168" target="_blank" >Neopixel</a>). Strömförsörjning kommer från två AA-batterier i serie.</p>
+    <p>Till Pro Mini:n är fem tryckknappar med olika färger anslutna, en aktiv buzzer som kan spela upp olika frekvenser från mikrokontrollern, samt en 24 stycken rgb LED-ring kontrollerad med <a href="https://web.archive.org/web/https://cdn-shop.adafruit.com/datasheets/WS2812.pdf" target="_blank" rel="noopener noreferrer">WS2812</a> (aka <a href="https://www.adafruit.com/category/168" target="_blank" rel="noopener noreferrer" >Neopixel</a>). Strömförsörjning kommer från två AA-batterier i serie.</p>
     <figure>
         <img src="graphics/fritzing-view.svg" alt="Kopplingsschema över elkretsen">
         <figcaption>Fritzing kopplingsschema på spelet. <a href="graphics/fritzing-view.fzz" download>Ladda ned</a></figcaption>
     </figure>
-    <p>Koden använder både Adafruit's <a href="https://github.com/adafruit/Adafruit_NeoPixel" target="_blank">Neopixel</a> bibliotek för att styra pixelringen, och mitt egna <a href="https://github.com/monkcs/devuino" target="_blank">Devuino</a> som är ett objektorienterat C++ bibliotek för tryckknapparna.
+    <p>Koden använder både Adafruit's <a href="https://github.com/adafruit/Adafruit_NeoPixel" target="_blank" rel="noopener noreferrer">Neopixel</a> bibliotek för att styra pixelringen, och mitt egna <a href="https://github.com/monkcs/devuino" target="_blank" rel="noopener noreferrer">Devuino</a> som är ett objektorienterat C++ bibliotek för tryckknapparna.
     Fördelen med Devuino är att varje knapp blir ett eget objekt som minimerar risken för buggar och ökar enkelheten att skriva kod. </p>
     <figure>
         <pre><code data-language="cpp">#include &lt;Devuino.h>

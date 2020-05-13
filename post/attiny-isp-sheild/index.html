@@ -7,12 +7,12 @@
         <br/>
         <time datetime="2018-03-17T10:00+01:00">23 april 2018. 22:20</time>
     </header>
-    <p>Med de små mikrokontrollerna <a href="https://www.microchip.com/wwwproducts/en/attiny85" target="_blank">ATtiny25/45/85 </a>från <a href="https://www.microchip.com" target="_blank">Microchip (tidigare Atmel)</a> kan man billigare och enkelt bygga arduinoprojekt utan de extra komponenterna som inte behövs från utvecklingskorten. Detta är perfekt för projekt med låg strömförbrukning och liten formfaktor, till exempel vid batteridrift.</p>
-    <p>Då mikrokontrollern inte har något USB-gränssnitt behöver programmering ske från en annan enhet, där en <a href="https://store.arduino.cc/arduino-uno-rev3" target="_blank">Arduino Uno</a> kan användas, konfigurerad som <abbr title="In System Programmer">ISP</abbr>. I detta projekt bygger jag en mer permanent lösning än jumpers på ett breadboard: en Arduino Uno sheild som håller en 8-pin IC-hållare för att enkelt kunna programmera ATtiny chip i <abbr title="Dual In-line Package">DIP paket</abbr>.</p>
+    <p>Med de små mikrokontrollerna <a href="https://www.microchip.com/wwwproducts/en/attiny85" target="_blank" rel="noopener noreferrer">ATtiny25/45/85 </a>från <a href="https://www.microchip.com" target="_blank" rel="noopener noreferrer">Microchip (tidigare Atmel)</a> kan man billigare och enkelt bygga arduinoprojekt utan de extra komponenterna som inte behövs från utvecklingskorten. Detta är perfekt för projekt med låg strömförbrukning och liten formfaktor, till exempel vid batteridrift.</p>
+    <p>Då mikrokontrollern inte har något USB-gränssnitt behöver programmering ske från en annan enhet, där en <a href="https://store.arduino.cc/arduino-uno-rev3" target="_blank" rel="noopener noreferrer">Arduino Uno</a> kan användas, konfigurerad som <abbr title="In System Programmer">ISP</abbr>. I detta projekt bygger jag en mer permanent lösning än jumpers på ett breadboard: en Arduino Uno sheild som håller en 8-pin IC-hållare för att enkelt kunna programmera ATtiny chip i <abbr title="Dual In-line Package">DIP paket</abbr>.</p>
 
     <!-- INSERT PART LIST -->
 
-    <p>Arduino har en artikel <a href="https://www.arduino.cc/en/Tutorial/ArduinoISP" target="_blank">Arduino as ISP and Arduino Bootloaders</a>, där det ingående beskrivs hur de olika utvecklingskorten ansluts för att kunna programmera en sekundär mikrokontroller. En fördel också är att det med denna metod går att programmera ett chip <em>utan</em> en bootloader, för att bland annat kunna använda hela programminnet. För att använda Arduino Uno som en programmerare används följande uppsättning:</p>
+    <p>Arduino har en artikel <a href="https://www.arduino.cc/en/Tutorial/ArduinoISP" target="_blank" rel="noopener noreferrer">Arduino as ISP and Arduino Bootloaders</a>, där det ingående beskrivs hur de olika utvecklingskorten ansluts för att kunna programmera en sekundär mikrokontroller. En fördel också är att det med denna metod går att programmera ett chip <em>utan</em> en bootloader, för att bland annat kunna använda hela programminnet. För att använda Arduino Uno som en programmerare används följande uppsättning:</p>
     <figure>
         <table>
             <thead>
@@ -43,7 +43,7 @@
     </figure>
     <figure>
         <img src="graphics/attiny-programming.svg" alt="Schema över fysiska anslutningar på mikrokontrollern" />
-        <figcaption>Anslutning för SPI på ATtiny <a href="http://www.pighixxx.com/" target="_blank">Grafik: PighiXXX</a></figcaption>
+        <figcaption>Anslutning för SPI på ATtiny <a href="http://www.pighixxx.com/" target="_blank" rel="noopener noreferrer">Grafik: PighiXXX</a></figcaption>
     </figure>
     <figure>
         <img src="graphics/arduino-uno-perf-sheild.png" alt="Prototypsheild för anslutning till Arduino Uno" />
