@@ -1,18 +1,16 @@
 @charset "UTF-8";
+
+@import '../font/noto-mono/noto-mono.css';
+@import '../font/noto-sans/noto-sans.css';
+@import '../font/kollektif/kollektif.css';
+
 @viewport {
     /* https://developer.mozilla.org/en-US/docs/Web/CSS/@viewport/ */
     orientation: auto;
     user-zoom: zoom;
 }
 
-:root {
-    /* https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables */
-    --font-color-gray: #3d3d3d;
-    --link-color: #0074d9;
-    --shadow: 0px 0px 50px -3px rgba(196, 196, 196, 0.27);
-}
-
-.no-script::before {
+noscript::before {
     content: "No Javascript is activated, so this page may behave a bit funky...";
 }
 
@@ -97,7 +95,7 @@ label.navigation-toggle {
 }
 
 aside, main {
-    box-shadow: var(--shadow);
+    box-shadow: 0px 0px 50px -3px rgba(196, 196, 196, 0.27);
     background-color: #fdfcfc;
 }
 
@@ -231,7 +229,7 @@ a:visited {
     color: inherit;
     text-decoration: inherit;
     border-bottom-style: solid;
-    border-bottom-color: var(--link-color);
+    border-bottom-color: #0074d9;
     padding-left: 0.2rem;
     padding-right: 0.2rem;
 }
@@ -311,7 +309,6 @@ var {
 
 code,
 mark,
-blockquote,
 cite,
 del,
 ins {
@@ -371,23 +368,17 @@ figcaption {
 }
 
 blockquote {
-    font-size: inherit;
-    color: var(--font-color-gray);
     font-style: italic;
 }
 
 blockquote:before {
-    font-size: inherit;
-    color: var(--font-color-gray);
     content: open-quote;
-    padding-right: 0.5rem;
+    padding-right: 0.4rem;
 }
 
 blockquote:after {
-    font-size: inherit;
-    color: var(--font-color-gray);
     content: close-quote;
-    padding-left: 0.5rem;
+    padding-left: 0.4rem;
 }
 
 blockquote,
