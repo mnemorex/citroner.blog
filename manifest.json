@@ -11,9 +11,10 @@
     "icons":
     [
     	{
-            "src": "graphics/icons/citroner.svg",
-            "sizes": "500x500",
-            "type": "image/svg+xml"
+            "src": "graphics/icons/citroner-background.svg",
+            "sizes": "1000x1000",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
     	}
     ]
 }
