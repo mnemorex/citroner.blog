@@ -1,0 +1,68 @@
+.price {
+    color: dodgerblue;
+    padding: 3px;
+    margin: 5px;
+}
+
+.noteringar {
+    position: fixed;
+    z-index: 1000;
+    max-width: 500px;
+    display: none;
+    background: #ffffff;
+    padding: 20px;
+    padding-left: 50px;
+    padding-right: 50px;
+    border-color: black;
+    border-width: thin;
+    border-style: solid;
+}
+
+.box {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kvitto {
+    position: fixed;
+    z-index: 1000;
+    max-width: 500px;
+    display: none;
+    background: #ffffff;
+    padding: 20px;
+    padding-left: 50px;
+    padding-right: 50px;
+    border-color: black;
+    border-width: thin;
+    border-style: solid;
+}
+
+.klart {
+    position: fixed;
+    z-index: 1000;
+    max-width: 500px;
+    display: none;
+    background: #ffffff;
+    padding: 20px;
+    padding-left: 50px;
+    padding-right: 50px;
+    border-color: black;
+    border-width: thin;
+    border-style: solid;
+}
+
+button {
+    margin-left: 5px;
+}
+
+ul {
+    padding: 0;
+}
+
+input {
+    margin-bottom: 10px;
+}
