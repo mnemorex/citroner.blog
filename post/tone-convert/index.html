@@ -1,97 +1,175 @@
 <article data-author-id="monkcs" lang="sv">
-    <script src="/javascript/shellcheck.js"></script><noscript><meta charset="UTF-8" /><link rel="stylesheet" type="text/css" href="/css/style.css" /></noscript>
-    <script id="javascript-entrypoint">
-        'use strict';
+  <script src="/javascript/shellcheck.js"></script><noscript>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" /></noscript>
+  <script id="javascript-entrypoint">
+    'use strict';
 
-        var template = document.querySelector('#select-list');
-        var keybutton = document.importNode(template.content, true);
-        keybutton.children[0].id = "key";
-       keybutton.children[0].value = 0;
-        var insert = document.querySelector('#insert-key');
-        insert.appendChild(keybutton);
-        document.getElementById('key').addEventListener('change', convert, false);
+    document.getElementById('insert-key').lastElementChild.addEventListener('input', convert, false);
 
-        for (var i = 0; i < 32; i++)
+    let insert = document.getElementById('insert');
+    for (var i = 0; i < 28; i++)
+    {
+      let input = document.importNode(document.querySelector('#select-list').content, true);
+      insert.appendChild(input);
+      insert.lastElementChild.addEventListener('input', convert, false);
+    }
+
+    function parse(text)
+    {
+      let head = text.charAt(0).toUpperCase();
+
+      if (text.charAt(1).toLowerCase() == 'b' || text.charAt(1) == '#')
+      {
+        head += text.charAt(1).toLowerCase();
+        return { tone: head, tail: text.slice(2) };
+      }
+      else
+      {
+        return { tone: head, tail: text.slice(1) };
+      }
+    }
+
+    function numeric(tone)
+    {
+      if (tone == "A") { return 0; }
+      if (tone == "A#") { return 1; }
+      if (tone == "Bb") { return 1; }
+      if (tone == "B") { return 2; }
+      if (tone == "C") { return 3; }
+      if (tone == "C#") { return 4; }
+      if (tone == "Db") { return 4; }
+      if (tone == "D") { return 5; }
+      if (tone == "D#") { return 6; }
+      if (tone == "Eb") { return 6; }
+      if (tone == "E") { return 7; }
+      if (tone == "F") { return 8; }
+      if (tone == "F#") { return 9; }
+      if (tone == "Gb") { return 9; }
+      if (tone == "G") { return 10; }
+      if (tone == "G#") { return 11; }
+      if (tone == "Ab") { return 11; }
+
+      return -1;
+    }
+
+    function display(tone)
+    {
+      if (tone == 0) { return "A"; }
+      //if (tone == 1) { return "A#"; }
+      if (tone == 1) { return "Bb"; }
+      if (tone == 2) { return "B"; }
+      if (tone == 3) { return "C"; }
+      //if (tone == 4) { return "C#"; }
+      if (tone == 4) { return "Db"; }
+      if (tone == 5) { return "D"; }
+      // if (tone == 6) { return "D#"; }
+      if (tone == 6) { return "Eb"; }
+      if (tone == 7) { return "E"; }
+      if (tone == 8) { return "F"; }
+      //if (tone == 9) { return "F#"; }
+      if (tone == 9) { return "Gb"; }
+      if (tone == 10) { return "G"; }
+      //if (tone == 11) { return "G#"; }
+      if (tone == 11) { return "Ab"; }
+
+      return "";
+    }
+
+    function convert()
+    {
+      /* Remove previous output */
+      for (let output of document.getElementsByTagName('output'))
+      {
+        while (output.firstChild)
         {
-            var template = document.querySelector('#select-list');
-            var keybutton = document.importNode(template.content, true);
-            keybutton.children[0].id = i;
-            var insert = document.querySelector('#insert');
-            insert.appendChild(keybutton);
-            document.getElementById(i).addEventListener('change', convert, false);
+          output.removeChild(output.firstChild);
         }
+      }
 
-        convert();
+      const target = parseInt(document.getElementById('key').value);
+      const tone = numeric(parse(document.getElementById('insert').firstElementChild.value).tone);
+      const distance = target - tone;
 
-        function convert()
+
+      var template = document.querySelector('#select-list');
+      var result = document.getElementById('result');
+
+      for (let input of document.getElementById("insert").children)
+      {
+        var converted = document.importNode(template.content, true);
+        const old = parse(input.value);
+
+        if (old.tone != "")
         {
-            document.querySelector('output').innerHTML = "";
-
-            var distance = parseInt(document.getElementById('key').value) - parseInt(document.getElementById('0').value);
-
-            for (var i = 0; i < 32; i++)
-            {
-                var template = document.querySelector('#select-list');
-                var keybutton = document.importNode(template.content, true);
-                keybutton.children[0].disabled = true;
-
-                if (parseInt(document.getElementById(i).value) != -1)
-                {
-                    keybutton.children[0].value = mod((parseInt(document.getElementById(i).value) + distance), 12);
-                }
-                else
-                {
-                    keybutton.children[0].value = -1;
-                }
-                var insert = document.querySelector('output');
-                insert.appendChild(keybutton);
-            }
+          converted.firstElementChild.value = display(mod(numeric(old.tone) + distance, 12)) + old.tail;
         }
+        console.log(distance);
+        result.appendChild(converted);
+      }
+    }
 
-        function differance (a, b) { return Math.abs(a - b); }
-        function mod(n, m) {
-          return ((n % m) + m) % m;
-        }
+    function differance(a, b) { return Math.abs(a - b); }
+    function mod(n, m)
+    {
+      return ((n % m) + m) % m;
+    }
 
-    </script>
+    convert();
 
-    <header>
-        <h1 lang="sv">Tonändrare</h1>
-        <h1 lang="en">Tone converter</h1>
-    </header>
+  </script>
 
-    <p>
-      <template id="select-list">
-        <select>
-              <option value="-1"></option>
-              <option value="0">A</option>
-              <option value="1">A♯ / Bb</option>
-              <option value="2">B</option>
-              <option value="3">C</option>
-              <option value="4">C♯ / Db</option>
-              <option value="5">D</option>
-              <option value="6">E</option>
-              <option value="7">E♯ / Fb</option>
-              <option value="8">F</option>
-              <option value="9">F♯ / Gb</option>
-              <option value="10">G</option>
-              <option value="11">G♯ / Ab</option>
-        </select>
-      </template>
+  <header>
+    <h1 lang="sv">Tonändrare</h1>
+    <h1 lang="en">Tone converter</h1>
+  </header>
 
-      <form id="convert">
-        <div id="insert-key">
-          <input type="reset" />
-          <label for="key">Välj tonart: </label>
-        </div>
-        <br/>
-        <div id="insert"></div>
-        <br/>
-      </form>
+  <p>
+    <template id="select-list">
+      <input type="text" spellcheck="false" autocapitalize="false" maxlength="10" />
+    </template>
 
-      <label>Konvertering </label>
-      <br/>
-      <output></output>
-    </p>
+  <form id="convert">
+    <div id="insert-key">
+      <input type="reset" />
+      <label for="key">Välj ny tonart: </label>
+      <select id="key">
+        <option selected value="0">A</option>
+        <option value="1">Bb (A♯)</option>
+        <option value="2">B</option>
+        <option value="3">C</option>
+        <option value="4">Db (C♯)</option>
+        <option value="5">D</option>
+        <option value="6">Eb (D♯)</option>
+        <option value="7">E</option>
+        <option value="8">F</option>
+        <option value="9">Gb (F♯)</option>
+        <option value="10">G</option>
+        <option value="11">Ab (G♯)</option>
+      </select>
+    </div>
+
+    <label>Orginal</label>
+    <br />
+    <div id="insert"></div>
+    <br />
+  </form>
+
+  <label>Konvertering </label>
+  <br />
+  <output id="result"></output>
+  </p>
+
+  <style>
+    #insert,
+    output {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"] {
+      width: 10ch;
+    }
+  </style>
 
 </article>

@@ -1,9 +1,9 @@
-    /* Make sure the shell is present if it was previously disabled */
-    shellstyle(true, true);
+/* Make sure the shell is present if it was previously disabled */
+shellstyle(true, true);
 
-    load(window.location.hash.substring(1) + window.location.search, true);
+load(window.location.hash.substring(1) + window.location.search, true);
 
-    fetch("/post/register--refresh.html").then(validate).then(sidepanel);
+fetch("/post/register--refresh.html").then(validate).then(sidepanel);
 
 window.onpopstate = function (event)
 {
@@ -22,7 +22,7 @@ function events()
         {
             if (link.getAttribute("download") == null)
             {
-	              link.addEventListener("click", relay);
+                link.addEventListener("click", relay);
             }
         }
     }
