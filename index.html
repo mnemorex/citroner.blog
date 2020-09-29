@@ -5,34 +5,31 @@
     <meta charset="UTF-8" />
     <meta name="shelldocument" content="true" />
 
-    <script>
-        if (navigator.language.includes("sv"))
-        {
-            document.documentElement.setAttribute('lang', 'sv');
-        }
-    </script>
-
     <!-- Preload -->
     <link rel="preload" href="post/register--refresh.html" as="fetch" crossorigin>
 
     <!-- Javascript -->
-    <script defer src="javascript/sitescript.js"></script>
+    <script defer src="javascript/sitescript.js" type="module"></script>
 
     <!-- Stylesheet -->
     <link rel="stylesheet" type="text/css" class="main-stylesheet" href="css/style.css" />
 
-    <!-- Publisher Information -->
+    <!-- Publisher information -->
     <meta name="author" content="Charlie Habolin" />
     <meta name="publisher" content="Charlie Habolin" />
     <meta name="description" content="A blog about electronics, code, life and citroner!" />
 
-    <!-- Web manifest -->
+    <!-- Title and favicon -->
     <title lang="sv">Citroner Bloggen</title>
     <title lang="en">Citroner Blog</title>
+    <link rel="icon" type="image/svg" href="graphics/icons/citroner.svg" />
+
+    <!-- Web manifest -->
     <link rel="manifest" href="manifest.json" />
+
+    <!-- Apple tweaks -->
     <meta name="viewport" id="viewport" content="width=device-width,initial-scale=1" />
     <link rel="apple-touch-icon" href="graphics/icons/citroner-250x250-background.png" />
-    <link rel="icon" type="image/svg" href="graphics/icons/citroner.svg" />
 </head>
 
 <body>

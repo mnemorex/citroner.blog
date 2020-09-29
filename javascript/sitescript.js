@@ -1,3 +1,9 @@
+/* Set language based on user agent language */
+if (navigator.language.includes("sv"))
+{
+    document.documentElement.setAttribute('lang', 'sv');
+}
+
 /* Make sure the shell is present if it was previously disabled */
 shellstyle(true, true);
 
@@ -5,14 +11,14 @@ load(window.location.hash.substring(1) + window.location.search, true);
 
 fetch("/post/register--refresh.html").then(validate).then(sidepanel);
 
-window.onpopstate = function (event)
+window.addEventListener('popstate', function (event)
 {
     if (event.state)
     {
         shellstyle(true, true);
         load(event.state.path, true);
     }
-};
+}, false);
 
 function events()
 {
@@ -130,18 +136,10 @@ function insert(html)
 
     try
     {
-        let entrypoint = document.getElementById("javascript-entrypoint");
-        if (entrypoint != null)
-        {
-            eval(entrypoint.innerHTML);
-        }
+        /* Try to import additional javascript from article directory */
+        import(window.location.pathname + 'javascript/script.js').then(module => module.default()).catch(error => { });
     }
-    catch (error)
-    {
-        console.error("Running eval on element 'javascript-entrypoint' failed");
-        console.error(error);
-    }
-
+    catch (error) { }
 }
 
 var bodystorage = null;
