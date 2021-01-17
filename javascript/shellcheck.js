@@ -1,3 +1,5 @@
+"use strict";
+
 let shellLoaded = document.querySelector('meta[name="shelldocument"]');
 if (!shellLoaded)
 {

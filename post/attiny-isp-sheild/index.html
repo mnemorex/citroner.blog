@@ -1,18 +1,32 @@
 <article data-author-id="monkcs" lang="sv">
-    <script src="/javascript/shellcheck.js"></script><noscript><meta charset="UTF-8"><link rel="stylesheet" type="text/css" href="/css/style.css" /></noscript>
+    <script src="/javascript/shellcheck.js"></script><noscript>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="/css/style.css" /></noscript>
     <header>
         <h1 lang="sv">Programmera ATtiny med Arduino Uno sheild</h1>
         <h1 lang="en">Program ATtiny using a Arduino Uno sheild</h1>
         <img src="/graphics/authors/charlie-habolin.jpg" alt="Porträtt" loading="lazy"> <span>Charlie Habolin</span>
-        <br/>
+        <br />
         <time datetime="2018-03-17T10:00+01:00">23 april 2018. 22:20</time>
     </header>
-    <p>Med de små mikrokontrollerna <a href="https://www.microchip.com/wwwproducts/en/attiny85" target="_blank" rel="noopener noreferrer">ATtiny25/45/85 </a>från <a href="https://www.microchip.com" target="_blank" rel="noopener noreferrer">Microchip (tidigare Atmel)</a> kan man billigare och enkelt bygga arduinoprojekt utan de extra komponenterna som inte behövs från utvecklingskorten. Detta är perfekt för projekt med låg strömförbrukning och liten formfaktor, till exempel vid batteridrift.</p>
-    <p>Då mikrokontrollern inte har något USB-gränssnitt behöver programmering ske från en annan enhet, där en <a href="https://store.arduino.cc/arduino-uno-rev3" target="_blank" rel="noopener noreferrer">Arduino Uno</a> kan användas, konfigurerad som <abbr title="In System Programmer">ISP</abbr>. I detta projekt bygger jag en mer permanent lösning än jumpers på ett breadboard: en Arduino Uno sheild som håller en 8-pin IC-hållare för att enkelt kunna programmera ATtiny chip i <abbr title="Dual In-line Package">DIP paket</abbr>.</p>
+    <p>Med de små mikrokontrollerna <a href="https://www.microchip.com/wwwproducts/en/attiny85" target="_blank"
+            rel="noopener noreferrer">ATtiny25/45/85 </a>från <a href="https://www.microchip.com" target="_blank"
+            rel="noopener noreferrer">Microchip (tidigare Atmel)</a> kan man billigare och enkelt bygga arduinoprojekt
+        utan de extra komponenterna som inte behövs från utvecklingskorten. Detta är perfekt för projekt med låg
+        strömförbrukning och liten formfaktor, till exempel vid batteridrift.</p>
+    <p>Då mikrokontrollern inte har något USB-gränssnitt behöver programmering ske från en annan enhet, där en <a
+            href="https://store.arduino.cc/arduino-uno-rev3" target="_blank" rel="noopener noreferrer">Arduino Uno</a>
+        kan användas, konfigurerad som <abbr title="In System Programmer">ISP</abbr>. I detta projekt bygger jag en mer
+        permanent lösning än jumpers på ett breadboard: en Arduino Uno sheild som håller en 8-pin IC-hållare för att
+        enkelt kunna programmera ATtiny chip i <abbr title="Dual In-line Package">DIP paket</abbr>.</p>
 
     <!-- INSERT PART LIST -->
 
-    <p>Arduino har en artikel <a href="https://www.arduino.cc/en/Tutorial/ArduinoISP" target="_blank" rel="noopener noreferrer">Arduino as ISP and Arduino Bootloaders</a>, där det ingående beskrivs hur de olika utvecklingskorten ansluts för att kunna programmera en sekundär mikrokontroller. En fördel också är att det med denna metod går att programmera ett chip <em>utan</em> en bootloader, för att bland annat kunna använda hela programminnet. För att använda Arduino Uno som en programmerare används följande uppsättning:</p>
+    <p>Arduino har en artikel <a href="https://www.arduino.cc/en/Tutorial/ArduinoISP" target="_blank"
+            rel="noopener noreferrer">Arduino as ISP and Arduino Bootloaders</a>, där det ingående beskrivs hur de olika
+        utvecklingskorten ansluts för att kunna programmera en sekundär mikrokontroller. En fördel också är att det med
+        denna metod går att programmera ett chip <em>utan</em> en bootloader, för att bland annat kunna använda hela
+        programminnet. För att använda Arduino Uno som en programmerare används följande uppsättning:</p>
     <figure>
         <table>
             <thead>
@@ -43,17 +57,20 @@
     </figure>
     <figure>
         <img src="graphics/attiny-programming.svg" alt="Schema över fysiska anslutningar på mikrokontrollern" />
-        <figcaption>Anslutning för SPI på ATtiny <a href="http://www.pighixxx.com/" target="_blank" rel="noopener noreferrer">Grafik: PighiXXX</a></figcaption>
+        <figcaption>Anslutning för SPI på ATtiny <a href="http://www.pighixxx.com/" target="_blank"
+                rel="noopener noreferrer">Grafik: PighiXXX</a></figcaption>
     </figure>
     <figure>
         <img src="graphics/arduino-uno-perf-sheild.png" alt="Prototypsheild för anslutning till Arduino Uno" />
     </figure>
-    <p>Den prototypsheild som jag använder har en perfboard med lödöar, samt banor för 5V och jord. Denna sheild har ingen ICSP kontaktgrupp, så jag löder till de numrerade pin.</p>
+    <p>Den prototypsheild som jag använder har en perfboard med lödöar, samt banor för 5V och jord. Denna sheild har
+        ingen ICSP kontaktgrupp, så jag löder till de numrerade pin.</p>
     <figure>
         <img src="graphics/attiny-sheild-overview.jpg" alt="Färdigställd sheild för Arduino Uno" />
         <figcaption>Färdigställd sheild med en monterad ATtiny85</figcaption>
     </figure>
-    <p>För att använda ATtiny fristående programmeras den, och sedan lossas från uno sheilden och ansluts till en strömkälla. Med ett enkelt testprogram kan vi testa att mikrokontrollern faktiskt har programmerats.</p>
+    <p>För att använda ATtiny fristående programmeras den, och sedan lossas från uno sheilden och ansluts till en
+        strömkälla. Med ett enkelt testprogram kan vi testa att mikrokontrollern faktiskt har programmerats.</p>
     <figure>
         <pre><code data-language="c">void setup() {
   pinMode(0, OUTPUT);
@@ -62,7 +79,7 @@
 void loop() {
   digitalWrite(0, true);
   delay(500);
-  digitalWrite(1, false);
+  digitalWrite(0, false);
   delay(1000);
 }</code></pre>
         <figcaption>blink.ino</figcaption>
@@ -76,7 +93,9 @@ void loop() {
 
     <footer>
         <address>
-            Kontakta mig på <a href="mailto:charlie.habolin@monkcs.se?subject=citroner.blog - attiny-isp-sheild">charlie.habolin@monkcs.se</a> om du har någon fråga!
+            Kontakta mig på <a
+                href="mailto:charlie.habolin@monkcs.se?subject=citroner.blog - attiny-isp-sheild">charlie.habolin@monkcs.se</a>
+            om du har någon fråga!
         </address>
     </footer>
 </article>
