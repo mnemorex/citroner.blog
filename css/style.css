@@ -82,7 +82,7 @@ label.navigation-toggle {
     padding-right: inherit;
     padding-bottom: inherit;
     padding-top: inherit;
-    border-radius: 0.7rem;
+    border-radius: 0.8rem;
 }
 
 .flex-container {
@@ -99,11 +99,11 @@ label.navigation-toggle {
 aside, main {
     box-shadow: 0px 0px 50px -3px rgba(196, 196, 196, 0.27);
     background-color: #fdfcfc;
-    border-radius: 0.7rem;
+    border-radius: 0.8rem;
 }
 
 aside {
-    margin-right: 0.7rem;
+    margin-right: 0.8rem;
     overflow-y: visible;
     width: 15%;
     max-width: 17rem;
@@ -119,7 +119,7 @@ nav {
 nav ul {
     list-style-type: none;
     padding-left: 1.5rem;
-    padding-right: 0.9rem;
+    padding-right: 0.8rem;
 }
 
 nav ul li h2 {
@@ -214,7 +214,7 @@ h2 {
 
 h3 {
     font-size: 1.47rem;
-    margin-bottom: 0.9rem;
+    margin-bottom: 0.8rem;
 }
 
 h4 {
@@ -282,17 +282,17 @@ blockquote {
 
 figure img, video 
 {
-    border-radius: 0.7rem 0.7rem 0 0;
+    border-radius: 0.8rem 0.8rem 0 0;
 }
 
 figure img:only-child, video:only-child
 {
-    border-radius: 0.7rem;
+    border-radius: 0.8rem;
 }
 
 figcaption {
     text-align: right;
-    border-radius: 0 0 0.7rem 0.7rem;
+    border-radius: 0 0 0.8rem 0.8rem;
 }
 
 pre {
@@ -370,11 +370,11 @@ figure code {
 figure code,
 blockquote {
     padding: 1.2rem 1rem 1.2rem 1.2rem;
-    border-radius: 0.7rem 0.7rem 0 0;
+    border-radius: 0.8rem 0.8rem 0 0;
 }
 
 figure pre:only-child code {
-    border-radius: 0.7rem;
+    border-radius: 0.8rem;
 }
 
 code + figcaption,
