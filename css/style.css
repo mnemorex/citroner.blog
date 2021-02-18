@@ -82,6 +82,7 @@ label.navigation-toggle {
     padding-right: inherit;
     padding-bottom: inherit;
     padding-top: inherit;
+    border-radius: 0.7rem;
 }
 
 .flex-container {
@@ -90,6 +91,7 @@ label.navigation-toggle {
     flex-wrap: nowrap;
     justify-content: center;
     padding-top: 1rem;
+    padding-bottom: 1.1rem;
     align-items: stretch;
     position: relative;
 }
@@ -97,6 +99,7 @@ label.navigation-toggle {
 aside, main {
     box-shadow: 0px 0px 50px -3px rgba(196, 196, 196, 0.27);
     background-color: #fdfcfc;
+    border-radius: 0.7rem;
 }
 
 aside {
@@ -105,18 +108,18 @@ aside {
     width: 15%;
     max-width: 17rem;
     min-width: 13rem;
-    height: auto;
+    height: max-content;
 }
 
 nav {
     margin-top: 3.3rem;
+    margin-bottom: 2rem;
 }
 
 nav ul {
     list-style-type: none;
-    padding-left: 0.9rem;
+    padding-left: 1.5rem;
     padding-right: 0.9rem;
-
 }
 
 nav ul li h2 {
@@ -277,8 +280,19 @@ blockquote {
     padding: 0;
 }
 
+figure img, video 
+{
+    border-radius: 0.7rem 0.7rem 0 0;
+}
+
+figure img:only-child, video:only-child
+{
+    border-radius: 0.7rem;
+}
+
 figcaption {
     text-align: right;
+    border-radius: 0 0 0.7rem 0.7rem;
 }
 
 pre {
@@ -356,6 +370,11 @@ figure code {
 figure code,
 blockquote {
     padding: 1.2rem 1rem 1.2rem 1.2rem;
+    border-radius: 0.7rem 0.7rem 0 0;
+}
+
+figure pre:only-child code {
+    border-radius: 0.7rem;
 }
 
 code + figcaption,
@@ -466,6 +485,7 @@ main,
         transform: translateX(-30%);
         display: block;
         min-width: 95%;
+        border-radius: 0;
     }
 
     nav {
@@ -475,6 +495,12 @@ main,
     label.navigation-toggle {
         display: block;
     }
+
+    main label.navigation-toggle {
+        width: max-content;
+        padding: 1rem;
+    }
+
     #navigation-toggle:checked ~ aside {
         transform: translateX(0%);
         display: block;
@@ -487,7 +513,7 @@ main,
         filter: opacity(0.1) grayscale(0.5);
     }
     #navigation-toggle:checked ~ aside ~ main label.navigation-toggle {
-        opacity: 0
+        opacity: 0;
     }
     #navigation-toggle:not(:checked) ~ aside label.navigation-toggle {
         opacity: 0;
@@ -557,6 +583,10 @@ main,
     
     main {
         transform: translateX(calc(-100% + 4rem));
+    }
+
+    main label.navigation-toggle {
+        width: auto
     }
 }
 
