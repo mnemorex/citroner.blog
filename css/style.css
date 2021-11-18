@@ -4,12 +4,6 @@
 @import '../font/noto-sans/noto-sans.css';
 @import '../font/kollektif/kollektif.css';
 
-@viewport {
-    /* https://developer.mozilla.org/en-US/docs/Web/CSS/@viewport/ */
-    orientation: auto;
-    user-zoom: zoom;
-}
-
 noscript::before {
     content: "No Javascript is activated, so this page may behave a bit funky...";
 }
