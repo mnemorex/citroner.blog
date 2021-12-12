@@ -610,7 +610,124 @@ main,
 }
 
 @media (prefers-color-scheme: dark) {
-    main {
-       /* background: green;*/
+    html, body {
+        color: #ececec;
+        background-color: rgb(15, 15, 15);
+    }
+    body > header {
+        background-color: #252525;
+        color: #ffed96;
+    }
+
+    body > header > * {
+        filter: drop-shadow(3px 3px rgba(100, 100, 100, 0.87));
+    }
+
+    label.navigation-toggle {
+        background: #2c2c2c;
+    }
+
+    aside, main {
+        box-shadow: none;
+        background-color: #252525;
+    }
+
+    article header {
+        border-bottom-color: #4e4e4e;
+    }
+
+    a:link,
+    a:visited {
+        border-bottom-color: #4581b6;
+    }
+    
+    a:link:hover,
+    a:visited:hover {
+        background: #9dbcd42d;
+    }
+    
+    a:link:active,
+    a:visited:active {
+        background: #9dbcd483;
+    }
+    
+    a[href^="http://"]:link,
+    a[href^="http://"]:visited {
+        border-bottom-color: #dd3907;
+    }
+    
+    a[href^="http://"]:link:hover,
+    a[href^="http://"]:visited:hover {
+        background: #e77957;
+    }
+    
+    a[href^="http://"]:link:active,
+    a[href^="http://"]:visited:active {
+        background: #dd3907;
+    }
+    
+    a[href^="#"]:link,
+    a[href^="#"]:visited {
+        border-bottom-color: #00aad9;
+    }
+    
+    a[href^="mailto:"]:link,
+    a[href^="mailto:"]:visited {
+        border-bottom-color: #dd8e3e;
+    }
+    
+    a[href^="mailto:"]:link:hover,
+    a[href^="mailto:"]:visited:hover {
+        background: #c0906083;
+    }
+
+    mark {
+        background: #ffe97cee;
+    }
+    
+    del {
+        background: #ff9663ee;
+        color: black;
+    }
+    
+    ins {
+        background: #d9f79eee;
+        color: black;
+    }
+
+    code {
+        background: #464646;
+    }
+
+    figcaption {
+        background: #353535;
+    }
+
+    blockquote,
+    cite {
+        background: hsl(270, 7%, 35%);
+    }
+
+    tr:nth-child(odd) {
+        background: #353535;
+    }
+    
+    tr:nth-child(even) {
+        background: #464646;
+    }
+    
+    thead tr:first-child {
+        background: #535353;
+    }
+
+    @media all and (max-width: 960px) {
+        body > header {
+            background-color: #2c2c2c;
+        }
+
+        aside, main {
+            box-shadow: none;
+            background-color: #1c1c1c;;
+        }
     }
 }
