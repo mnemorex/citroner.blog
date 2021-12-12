@@ -249,6 +249,25 @@ a:visited:active {
     background: #bee2ff;
 }
 
+a[href^="http://"]:link,
+a[href^="http://"]:visited {
+    border-bottom-color: #dd3907;
+}
+
+a[href^="http://"]:link:hover,
+a[href^="http://"]:visited:hover {
+    background: #fd9778;
+}
+
+a[href^="http://"]:link:active,
+a[href^="http://"]:visited:active {
+    background: #dd3907;
+}
+
+a[href^="http://"]::before {
+    content: "⚠️ ";
+}
+
 a[href^="#"]:link,
 a[href^="#"]:visited {
     border-bottom-color: #00aad9;
